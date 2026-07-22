@@ -81,9 +81,8 @@ the browser address bar reflects navigation on web.
 
 ### Removed
 
-- Dependencies on `j_analytics` and `design_system` (from `pubspec.yaml`).
-- Transitive `package:j_analytics/analytics.dart` and `package:design_system/design_system.dart`
-  imports throughout `lib/`.
+- Dependencies on concrete analytics and design-system packages — analytics
+  is now an opt-in sink interface, theming is self-contained.
 
 ### Migration
 

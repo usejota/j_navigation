@@ -33,6 +33,7 @@ leans.
 | **State restoration (process death, per-branch)** | ⚠️ broken (open) | ⚠️ broken (open) | ❌ | ❌ not implemented |
 | Typed routes | ✅ (optional codegen) | ✅ (codegen) | ❌ | ✅ typed pages + actions; no serializable route object |
 | Codegen | optional | **required** (`build_runner`) | none | none |
+| Route registry required | ✅ (`GoRoute` tree) | ✅ (generated) | ❌ | **none** — builder is the route |
 | Context-free API | opt-in (via `GoRouter` DI) | opt-in (`StackRouter`) | ❌ | **by construction** |
 | Web | ✅ | ✅ | ✅ | ✅ |
 | Awaitable presented result | — | — | — | ✅ `present<T>` |

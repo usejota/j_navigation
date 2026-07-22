@@ -14,6 +14,10 @@ analyzer:
     - '**/build/**'
     - '**/ios/SourcePackages/**'
     - 'coverage/**'
+    # example_app is a separate Flutter application with its own deps and
+    # analysis_options.yaml; it is analyzed by the `example-app` CI job, not
+    # here (its provider/other deps aren't resolved from the package root).
+    - 'example_app/**'
 
 linter:
   rules:

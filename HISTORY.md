@@ -72,10 +72,10 @@ under that pressure — 134 call sites depend on it without churn.
 The decouple was deliberately scoped to remove host coupling without changing
 the existing single-stack behavior:
 
-- `j_analytics` → `NavigationAnalyticsSink` (opt-in interface; pass `null` for
-  the no-analytics build).
-- `design_system` → `NavigationTheme` / `NavigationThemeData` (self-contained,
-  Material defaults).
+- In-house analytics → `NavigationAnalyticsSink` (opt-in interface; pass `null`
+  for the no-analytics build).
+- In-house design system → `NavigationTheme` / `NavigationThemeData`
+  (self-contained, Material defaults).
 - Tabbed shell added (`NavigationController.tabbed`, `SwitchTab`,
   `NavigationShellBuilder`) — generalizing the host's `MainContainer` tab system
   into the package.

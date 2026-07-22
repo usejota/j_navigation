@@ -1,9 +1,14 @@
-# j_navigation - Action-Based Navigation System
+# j_navigation - Omni Navigation for Flutter
 
 A production-proven, action-based navigation system for Flutter, built on
 `RouterDelegate` (Navigator 2.0). Navigation is expressed as **immutable, typed
 action objects** processed by a single, `BuildContext`-free controller — so your
 ViewModels and coordinators can navigate without ever holding a context.
+
+**Omni navigation** — navigate *from anywhere* (coordinators, view models,
+stores, services — no `BuildContext` needed) *to anywhere* (no route registry
+gating the set of destinations; any `WidgetBuilder` is a valid target). The
+two together are the full shape: from anywhere, to anywhere.
 
 ## Why j_navigation
 

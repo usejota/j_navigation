@@ -62,6 +62,12 @@ restoration is table-stakes-in-theory that nobody has landed yet.
 
 ## j_navigation's real strengths
 
+The package's shape has a name: **omni navigation** — navigate *from anywhere*
+(coordinators, view models, stores — no `BuildContext`) *to anywhere* (no route
+registry; any `WidgetBuilder` is a valid destination). The two together — from
+anywhere, to anywhere — are what differentiate j_navigation from the
+context-first, registry-gated incumbents.
+
 1. **Context-free controller API, by construction.** `navigate(action)` takes
    no `BuildContext` — the controller API never took one, so there is no
    context-first path to drift back into. The incumbents offer context-free

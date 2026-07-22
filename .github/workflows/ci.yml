@@ -1,0 +1,110 @@
+# CI for j_navigation as a STANDALONE repo. GitHub Actions only reads
+# workflows from the repository ROOT, so this file is dormant while
+# j_navigation lives inside the mobile monorepo (the monorepo's root
+# flutter-lint.yml runs `melos analyze`/`test` and covers this package). It
+# activates once j_navigation is extracted to its own repo — hence the
+# package-relative paths (lib/**, test/**) and no working-directory prefix.
+name: CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/ci.yml"
+      - "lib/**"
+      - "test/**"
+      - "example_app/**"
+      - "pubspec.yaml"
+      - "pubspec.lock"
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/ci.yml"
+      - "lib/**"
+      - "test/**"
+      - "example_app/**"
+      - "pubspec.yaml"
+      - "pubspec.lock"
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pub-cache
+          key: pub-analyze-${{ runner.os }}-${{ hashFiles('pubspec.yaml') }}
+          restore-keys: pub-analyze-${{ runner.os }}-
+      - run: flutter --version
+      - run: flutter pub get
+      - run: dart format --set-exit-if-changed .
+      - run: flutter analyze --fatal-infos --fatal-warnings
+
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pub-cache
+          key: pub-test-${{ runner.os }}-${{ hashFiles('pubspec.yaml') }}
+          restore-keys: pub-test-${{ runner.os }}-
+      - run: flutter pub get
+      - run: flutter test --coverage
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage/
+
+  publish-dry-run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Confirm the package is always publishable — catches leaks, junk files,
+    # and pubspec issues before they ship.
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pub-cache
+          key: pub-publish-${{ runner.os }}-${{ hashFiles('pubspec.yaml') }}
+          restore-keys: pub-publish-${{ runner.os }}-
+      - run: flutter pub get
+      - run: flutter pub publish --dry-run
+
+  example-app:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pub-cache
+          key: pub-example-${{ runner.os }}-${{ hashFiles('example_app/pubspec.yaml') }}
+          restore-keys: pub-example-${{ runner.os }}-
+      - run: flutter pub get
+        working-directory: example_app
+      - run: flutter analyze
+        working-directory: example_app

@@ -13,7 +13,7 @@ on:
       - ".github/workflows/ci.yml"
       - "lib/**"
       - "test/**"
-      - "example_app/**"
+      - "example/**"
       - "pubspec.yaml"
       - "pubspec.lock"
       - "analysis_options.yaml"
@@ -24,7 +24,7 @@ on:
       - ".github/workflows/ci.yml"
       - "lib/**"
       - "test/**"
-      - "example_app/**"
+      - "example/**"
       - "pubspec.yaml"
       - "pubspec.lock"
       - "analysis_options.yaml"
@@ -107,9 +107,9 @@ jobs:
         with:
           path: |
             ~/.pub-cache
-          key: pub-example-${{ runner.os }}-${{ hashFiles('example_app/pubspec.yaml') }}
+          key: pub-example-${{ runner.os }}-${{ hashFiles('example/pubspec.yaml') }}
           restore-keys: pub-example-${{ runner.os }}-
       - run: flutter pub get
-        working-directory: example_app
+        working-directory: example
       - run: flutter analyze
-        working-directory: example_app
+        working-directory: example

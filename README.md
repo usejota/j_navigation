@@ -260,7 +260,7 @@ context.read<NavigationController>().navigate(
 );
 ```
 
-For a complete working example, see the `example_app/` directory in this package.
+For a complete working example, see the `example/` directory in this package.
 
 ### Same-Page Navigation Policy
 

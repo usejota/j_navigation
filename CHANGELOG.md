@@ -4,6 +4,12 @@
 
 - _(open for next changes)_
 
+## 1.0.1
+
+- Rename `example_app/` → `example/` so pub.dev's package analysis detects the
+  runnable example (awards the "Package has an example" score point). No
+  source or behavior changes.
+
 ## 1.0.0
 
 First standalone, open-source-ready release. Analytics is an opt-in sink

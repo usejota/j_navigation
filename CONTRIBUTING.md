@@ -23,10 +23,10 @@ flutter test
 flutter analyze
 ```
 
-The `example_app/` directory has a runnable demo:
+The `example/` directory has a runnable demo:
 
 ```bash
-cd example_app
+cd example
 flutter pub get
 flutter run
 ```

@@ -1,6 +1,6 @@
 name: j_navigation
 description: "A production-proven, action-based navigation system for Flutter — context-free controller, pure stack-transform actions, tabbed shell, bring-your-own analytics. No codegen."
-version: 1.0.0
+version: 1.0.1
 repository: https://github.com/usejota/j_navigation
 issue_tracker: https://github.com/usejota/j_navigation/issues
 topics:

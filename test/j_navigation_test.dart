@@ -1451,47 +1451,6 @@ void main() {
       expect(stack.length, 1);
     });
 
-    testWidgets(
-      'NavigationController ignores a stale removal for a non-top page',
-      (tester) async {
-        final controller =
-            NavigationController(
-              Push(
-                analyticsIdentifiable: _createAnalytics(
-                  (context) => Container(),
-                  'HomePage',
-                ),
-              ),
-              analyticsSink: sink,
-            )..navigate(
-              Push(
-                analyticsIdentifiable: _createAnalytics(
-                  (context) => Container(),
-                  'SubmittedPage',
-                ),
-              ),
-            );
-
-        // Flush the post-frame reset so the user-initiated guard is false —
-        // this is the state a route exit animation finishes in. A frame must
-        // actually run, so the tree has to be pumped; a bare `pump()` here
-        // leaves the guard true and the test passes vacuously.
-        await tester.pumpWidget(const SizedBox());
-        await tester.pump();
-
-        // A page that already left the stack finishes its exit animation and
-        // reports its removal late. It must not pop the current top.
-        final removed = controller.removePoppedPageIfNotUserInitiated(
-          'RetryPage',
-        );
-
-        expect(removed, false);
-        final stack = controller.currentNavigationStack;
-        expect(stack.length, 2);
-        expect(stack.last.screenName, 'SubmittedPage');
-      },
-    );
-
     test(
       'NavigationController ignores page removal from ReplaceStack operation',
       () {

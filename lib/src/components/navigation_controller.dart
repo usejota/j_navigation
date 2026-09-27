@@ -611,24 +611,6 @@ interface class NavigationController extends ChangeNotifier {
       return false;
     }
 
-    // A removal is only actionable while the page it names is still the top of
-    // the resolved stack. Route exit animations outlive the post-frame guard
-    // reset, so a chained action (e.g. DismissToTab.thenNavigate) that removes
-    // several pages and pushes a new top in one pass gets this callback after
-    // the guard is already false — popping the *new* top instead of the page
-    // that actually went away. A stale removal is a no-op.
-    //
-    // Compares by screen name, which is not unique (see
-    // NavigationKey — keys are suffixed with a counter for exactly this
-    // reason). A stack holding the same screen twice can still mistake a
-    // stale removal for the live top. Upgrade path: carry the unique key on
-    // the Page and compare that — deferred because Page.name currently feeds
-    // currentConfiguration and deep-link parsing.
-    if (removedPageName != null &&
-        _resolvedNavigationStack.lastOrNull?.screenName != removedPageName) {
-      return false;
-    }
-
     if (_isPerformingUserInitiatedNavigation) return false;
     if (_resolvedNavigationStack.length < 2) {
       // System back (popRoute passes null) on a lone root page: the root's

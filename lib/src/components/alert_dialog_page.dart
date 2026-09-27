@@ -3,6 +3,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'package:j_navigation/src/components/root_pop_scope.dart';
 import 'package:j_navigation/src/theme/navigation_theme.dart';
 
 /// A [Page] that presents a system-style alert dialog.
@@ -42,24 +43,28 @@ final class AlertDialogPage<T> extends Page<T> {
           final cupertinoTheme = CupertinoTheme.of(dialogContext);
           final description = this.description;
 
-          return CupertinoTheme(
-            data: cupertinoTheme.copyWith(
-              primaryColor: NavigationTheme.of(
-                dialogContext,
-              ).cupertinoPrimaryColor,
-            ),
-            child: CupertinoAlertDialog(
-              title: Text(title),
-              content: description == null ? null : Text(description),
-              actions: actions,
+          return RootPopScope(
+            child: CupertinoTheme(
+              data: cupertinoTheme.copyWith(
+                primaryColor: NavigationTheme.of(
+                  dialogContext,
+                ).cupertinoPrimaryColor,
+              ),
+              child: CupertinoAlertDialog(
+                title: Text(title),
+                content: description == null ? null : Text(description),
+                actions: actions,
+              ),
             ),
           );
         }
 
-        return AlertDialog(
-          title: Text(title),
-          content: description == null ? null : Text(description!),
-          actions: actions,
+        return RootPopScope(
+          child: AlertDialog(
+            title: Text(title),
+            content: description == null ? null : Text(description!),
+            actions: actions,
+          ),
         );
       },
     );

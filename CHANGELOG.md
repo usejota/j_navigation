@@ -1,8 +1,15 @@
 # Changelog
 
-## Unreleased
+## 1.0.2
 
-- _(open for next changes)_
+### Fixed
+
+- Android 16 / predictive back: back on a root page no longer closes the app;
+  register a dismiss callback and call `SystemNavigator.pop()` to exit.
+- Programmatic `Dismiss()` on a root page no longer invokes the page's dismiss
+  callback.
+- System back now closes a dialog/menu opened with `showDialog`/popup routes
+  over a root page instead of being ignored.
 
 ## 1.0.1
 

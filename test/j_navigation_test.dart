@@ -5,6 +5,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:j_navigation/navigation.dart';
@@ -1442,7 +1443,9 @@ void main() {
       final controller = NavigationController(
         initialPage,
         analyticsSink: sink,
-      )..removePoppedPageIfNotUserInitiated(null);
+      );
+      final result = controller.removePoppedPageIfNotUserInitiated(null);
+      expect(result, isTrue);
 
       final stack = controller.currentNavigationStack;
       expect(stack.length, 1);
@@ -3140,6 +3143,492 @@ void main() {
       },
     );
   });
+
+  group('Android system back at root', () {
+    late _CapturingSink sink;
+    late List<MethodCall> platformCalls;
+
+    setUp(() {
+      sink = _CapturingSink();
+      sink.events.clear();
+      platformCalls = <MethodCall>[];
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(SystemChannels.platform, (c) async {
+            platformCalls.add(c);
+            return null;
+          });
+    });
+
+    tearDown(() {
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(SystemChannels.platform, null);
+    });
+
+    List<bool> handlesBack() => [
+      for (final c in platformCalls)
+        if (c.method == 'SystemNavigator.setFrameworkHandlesBack')
+          c.arguments! as bool,
+    ];
+
+    bool exited() =>
+        platformCalls.any((c) => c.method == 'SystemNavigator.pop');
+
+    Future<void> pumpApp(
+      WidgetTester tester,
+      NavigationController controller,
+    ) async {
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      await tester.pumpWidget(
+        MaterialApp.router(
+          routerConfig: NavigationConfig(
+            controller: controller,
+            featureProvider: const _NoopFeatureProvider(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+    }
+
+    NavigationController _rootController([
+      String screenName = 'Root',
+      ValueKey<String>? key,
+    ]) => NavigationController(
+      Push(
+        analyticsIdentifiable: _createAnalytics(
+          (context) => Scaffold(body: Text(screenName)),
+          screenName,
+        ),
+        navigationKey: key,
+      ),
+      analyticsSink: sink,
+    );
+
+    testWidgets('P1a: 1-page Push root reports frameworkHandlesBack true', (
+      tester,
+    ) async {
+      final controller = _rootController();
+      await pumpApp(tester, controller);
+
+      expect(handlesBack(), isNotEmpty);
+      expect(handlesBack().last, isTrue);
+    });
+
+    testWidgets('P1b: root types report frameworkHandlesBack true', (
+      tester,
+    ) async {
+      Future<void> check(ViewNavigationType Function() make) async {
+        platformCalls.clear();
+        final controller = NavigationController(
+          make(),
+          analyticsSink: sink,
+        );
+        await pumpApp(tester, controller);
+        expect(handlesBack(), isNotEmpty);
+        expect(handlesBack().last, isTrue);
+        await tester.pumpWidget(const SizedBox());
+      }
+
+      await check(
+        () => Push(
+          analyticsIdentifiable: _createAnalytics(
+            (context) => const Scaffold(body: Text('A')),
+            'A',
+          ),
+          animated: false,
+        ),
+      );
+      await check(
+        () => Push(
+          analyticsIdentifiable: _createAnalytics(
+            (context) => const Scaffold(body: Text('B')),
+            'B',
+          ),
+          swipeToDismissEnabled: false,
+        ),
+      );
+      await check(
+        () => Present(
+          analyticsIdentifiable: _createAnalytics(
+            (context) => const Scaffold(body: Text('C')),
+            'C',
+          ),
+        ),
+      );
+      await check(
+        () => Present(
+          analyticsIdentifiable: _createAnalytics(
+            (context) => const Scaffold(body: Text('D')),
+            'D',
+          ),
+          transition: PresentTransition.fade,
+        ),
+      );
+      await check(
+        () => PresentMultiple(
+          analyticsIdentifiable: _createAnalytics(
+            (context) => const Scaffold(body: Text('E')),
+            'E',
+          ),
+          hiddenPages: const [],
+        ),
+      );
+      await check(
+        () => ReplaceStack(
+          analyticsIdentifiable: _createAnalytics(
+            (context) => const Scaffold(body: Text('F')),
+            'F',
+          ),
+          animationType: const ReplaceAnimationTypePush(),
+        ),
+      );
+    });
+
+    testWidgets('P1c: after Dismiss back to root, frameworkHandlesBack true', (
+      tester,
+    ) async {
+      final controller = _rootController('A');
+      await pumpApp(tester, controller);
+      controller.navigate(
+        Push(
+          analyticsIdentifiable: _createAnalytics(
+            (context) => const Scaffold(body: Text('B')),
+            'B',
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      controller.navigate(const Dismiss());
+      await tester.pumpAndSettle();
+
+      expect(handlesBack(), isNotEmpty);
+      expect(handlesBack().last, isTrue);
+    });
+
+    testWidgets('P2: root system back runs callback, stack unchanged', (
+      tester,
+    ) async {
+      for (final allow in [false, true]) {
+        platformCalls.clear();
+        var calls = 0;
+        final key = NavigationKey.generate('Root');
+        final controller = _rootController('Root', key);
+        controller.registerDismissCallback(key, () {
+          calls++;
+          return allow;
+        });
+        await pumpApp(tester, controller);
+
+        final handled = await tester.binding.handlePopRoute();
+        await tester.pumpAndSettle();
+
+        expect(handled, isTrue);
+        expect(calls, 1);
+        expect(controller.currentNavigationStack.length, 1);
+        expect(controller.currentNavigationStack.first.key, key);
+        expect(exited(), isFalse);
+        await tester.pumpWidget(const SizedBox());
+      }
+    });
+
+    testWidgets('P3: root system back with no callback leaves stack', (
+      tester,
+    ) async {
+      final controller = _rootController();
+      await pumpApp(tester, controller);
+
+      final handled = await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+
+      expect(handled, isTrue);
+      expect(controller.currentNavigationStack.length, 1);
+      expect(exited(), isFalse);
+    });
+
+    testWidgets(
+      'P3b: named root removal and guard-window removal skip callback',
+      (
+        tester,
+      ) async {
+        var calls = 0;
+        final key = NavigationKey.generate('Root');
+        final controller = _rootController('Root', key);
+        controller.registerDismissCallback(key, () {
+          calls++;
+          return true;
+        });
+
+        // Guard window: removePoppedPageIfNotUserInitiated runs synchronously
+        // right after navigate(), while _isPerformingUserInitiatedNavigation is
+        // still true. The check must stay first.
+        final freshKey = NavigationKey.generate('Fresh');
+        final fresh =
+            NavigationController(
+              Push(
+                analyticsIdentifiable: _createAnalytics(
+                  (context) => const Scaffold(body: Text('Fresh')),
+                  'Fresh',
+                ),
+                navigationKey: freshKey,
+              ),
+              analyticsSink: sink,
+            )..registerDismissCallback(freshKey, () {
+              calls++;
+              return true;
+            });
+        fresh.navigate(
+          Push(
+            analyticsIdentifiable: _createAnalytics(
+              (context) => const Scaffold(body: Text('Top')),
+              'Top',
+            ),
+          ),
+        );
+        fresh.removePoppedPageIfNotUserInitiated(null);
+        expect(calls, 0);
+        expect(fresh.currentNavigationStack.length, 2);
+
+        // Named removal at a root: no callback.
+        await pumpApp(tester, controller);
+        final removed = controller.removePoppedPageIfNotUserInitiated('Root');
+        expect(removed, isFalse);
+        expect(calls, 0);
+        expect(controller.currentNavigationStack.length, 1);
+      },
+    );
+
+    testWidgets('P4: programmatic Dismiss at root never calls callback', (
+      tester,
+    ) async {
+      var calls = 0;
+      final key = NavigationKey.generate('Root');
+      final controller = _rootController('Root', key);
+      controller.registerDismissCallback(key, () {
+        calls++;
+        return true;
+      });
+      await pumpApp(tester, controller);
+
+      controller.navigate(const Dismiss());
+      await tester.pumpAndSettle();
+      controller.navigate(const Dismiss(result: 'x'));
+      await tester.pumpAndSettle();
+
+      expect(calls, 0);
+      expect(controller.currentNavigationStack.length, 1);
+    });
+
+    testWidgets('P5: ReplaceStack with same key keeps page state', (
+      tester,
+    ) async {
+      var initCount = 0;
+      final key = NavigationKey.generate('B');
+      final controller =
+          NavigationController(
+            Push(
+              analyticsIdentifiable: _createAnalytics(
+                (context) => const Scaffold(body: Text('A')),
+                'A',
+              ),
+            ),
+            analyticsSink: sink,
+          )..navigate(
+            Push(
+              analyticsIdentifiable: AnalyticsIdentifiable(
+                screenName: 'B',
+                builder: (context) =>
+                    Scaffold(body: _Counter(onInit: () => initCount++)),
+              ),
+              navigationKey: key,
+            ),
+          );
+      await pumpApp(tester, controller);
+
+      for (var i = 0; i < 3; i++) {
+        await tester.tap(find.text('tap'));
+        await tester.pump();
+      }
+      expect(find.text('3'), findsOneWidget);
+      expect(initCount, 1);
+
+      controller.navigate(
+        ReplaceStack(
+          analyticsIdentifiable: AnalyticsIdentifiable(
+            screenName: 'B',
+            builder: (context) =>
+                Scaffold(body: _Counter(onInit: () => initCount++)),
+          ),
+          navigationKey: key,
+          animationType: const ReplaceAnimationTypePush(),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('3'), findsOneWidget);
+      expect(initCount, 1);
+    });
+
+    testWidgets('P6: multi-page system back dismisses top through popRoute', (
+      tester,
+    ) async {
+      for (final allow in [true, false]) {
+        platformCalls.clear();
+        sink.events.clear();
+        final keyB = NavigationKey.generate('B');
+        final controller = _rootController('A');
+        controller.navigate(
+          Push(
+            analyticsIdentifiable: _createAnalytics(
+              (context) => const Scaffold(body: Text('B')),
+              'B',
+            ),
+            navigationKey: keyB,
+          ),
+        );
+        if (!allow) {
+          controller.registerDismissCallback(keyB, () => false);
+        }
+        await pumpApp(tester, controller);
+        expect(controller.currentNavigationStack.length, 2);
+
+        await tester.binding.handlePopRoute();
+        await tester.pumpAndSettle();
+        await controller.flushAnalytics();
+
+        expect(exited(), isFalse);
+        if (allow) {
+          expect(controller.currentNavigationStack.length, 1);
+          expect(
+            sink.events.whereType<NavigationScreenExitEvent>().last.exitMethod,
+            'Dismiss',
+          );
+        } else {
+          expect(controller.currentNavigationStack.length, 2);
+          expect(controller.currentNavigationStack.last.key, keyB);
+        }
+        await tester.pumpWidget(const SizedBox());
+      }
+    });
+
+    testWidgets('P7: tabbed gate leaves branch-root back and Dismiss alone', (
+      tester,
+    ) async {
+      Push page(String name) => Push(
+        analyticsIdentifiable: _createAnalytics(
+          (context) => Scaffold(body: Text(name)),
+          name,
+        ),
+      );
+      // wantsKeepAlive: false keeps a single Navigator mounted (one per
+      // active branch). The default true mounts every branch Navigator at
+      // once, and MaterialApp's shared HeroController then asserts.
+      final controller = NavigationController.tabbed(
+        branches: [
+          NavigationBranch(
+            id: 1,
+            initialNavigation: page('A_root'),
+            wantsKeepAlive: false,
+          ),
+          NavigationBranch(
+            id: 2,
+            initialNavigation: page('B_root'),
+            wantsKeepAlive: false,
+          ),
+        ],
+        analyticsSink: sink,
+      );
+      var calls = 0;
+      final bRoot = controller.stackForBranch(2).first;
+      controller.registerDismissCallback(bRoot.key, () {
+        calls++;
+        return true;
+      });
+      await pumpApp(tester, controller);
+      controller.navigate(const SwitchTab(2));
+      await tester.pumpAndSettle();
+
+      // (a) system back at branch root: callback not called, no blocking PopScope.
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(calls, 0);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is PopScope && !w.canPop,
+        ),
+        findsNothing,
+      );
+
+      // (b) programmatic Dismiss at branch root: callback called once (today's
+      // behaviour, unchanged).
+      controller.navigate(const Dismiss());
+      await tester.pumpAndSettle();
+      expect(calls, 1);
+    });
+
+    testWidgets('P8: system back closes a dialog over the root page', (
+      tester,
+    ) async {
+      var calls = 0;
+      final key = NavigationKey.generate('Root');
+      final controller = _rootController('Root', key);
+      controller.registerDismissCallback(key, () {
+        calls++;
+        return true;
+      });
+      await pumpApp(tester, controller);
+
+      final rootContext = tester.element(find.text('Root'));
+      unawaited(
+        showDialog<void>(
+          context: rootContext,
+          builder: (context) => const AlertDialog(content: Text('Dialog')),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Dialog'), findsOneWidget);
+
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+
+      expect(find.text('Dialog'), findsNothing);
+      expect(calls, 0);
+      expect(exited(), isFalse);
+      expect(controller.currentNavigationStack.length, 1);
+    });
+  });
+}
+
+class _Counter extends StatefulWidget {
+  const _Counter({required this.onInit});
+
+  final VoidCallback onInit;
+
+  @override
+  State<_Counter> createState() => _CounterState();
+}
+
+class _CounterState extends State<_Counter> {
+  int taps = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.onInit();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text('$taps'),
+        TextButton(
+          onPressed: () => setState(() => taps++),
+          child: const Text('tap'),
+        ),
+      ],
+    );
+  }
 }
 
 /// Capturing sink that records navigation analytics events in order for

@@ -32,7 +32,7 @@ final class Modal extends ViewNavigationType {
     return ModalBottomSheetPage<dynamic>(
       key: key,
       name: screenName,
-      child: builder(context),
+      child: RootPopScope(child: builder(context)),
       isDismissible: isDismissible,
       enableDrag: enableDrag,
       isScrollControlled: isScrollControlled,

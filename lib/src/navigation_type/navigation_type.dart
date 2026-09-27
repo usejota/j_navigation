@@ -11,6 +11,7 @@ import 'package:j_navigation/src/components/alert_dialog_page.dart';
 import 'package:j_navigation/src/components/modal_bottom_sheet_page.dart';
 import 'package:j_navigation/src/components/no_animation_page.dart';
 import 'package:j_navigation/src/components/no_swipe_page.dart';
+import 'package:j_navigation/src/components/root_pop_scope.dart';
 import 'package:j_navigation/src/custom_types/replace_animation_type.dart';
 
 part 'alert.dart';
@@ -73,15 +74,19 @@ abstract base class ViewNavigationType extends NavigationType
         : NoAnimationPage<dynamic>(
             key: key,
             name: screenName,
-            child: builder(context),
+            child: RootPopScope(child: builder(context)),
           );
   }
 
+  /// Built-in page types wrap their content so a root page keeps system back
+  /// (Android predictive back). Custom subclasses that override this,
+  /// including types returned from `ReplaceAnimationTypeCustom.handler`, do
+  /// not get that wrap, and on Android 16 back on such a root closes the app.
   Page<dynamic> buildAnimatedPage(BuildContext context) {
     return MaterialPage<dynamic>(
       key: key,
       name: screenName,
-      child: builder(context),
+      child: RootPopScope(child: builder(context)),
     );
   }
 }

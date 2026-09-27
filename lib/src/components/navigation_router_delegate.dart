@@ -8,6 +8,7 @@ import 'package:j_navigation/src/branch/navigation_branch.dart';
 import 'package:j_navigation/src/branch/navigation_shell.dart';
 import 'package:j_navigation/src/components/navigation_controller.dart';
 import 'package:j_navigation/src/components/navigation_route_information_parser.dart';
+import 'package:j_navigation/src/components/root_pop_scope.dart';
 import 'package:j_navigation/src/navigation_type/navigation_type.dart';
 import 'package:j_navigation/src/theme/navigation_theme.dart';
 import 'package:j_navigation/src/theme/navigation_theme_data.dart';
@@ -99,7 +100,7 @@ final class NavigationRouterDelegate extends RouterDelegate<Object>
       },
     );
 
-    return _wrapWithTheme(navigator);
+    return _wrapWithTheme(SingleStackScope(child: navigator));
   }
 
   /// Renders an [IndexedStack] of per-branch [Navigator]s. The active branch
@@ -170,6 +171,18 @@ final class NavigationRouterDelegate extends RouterDelegate<Object>
 
   @override
   Future<bool> popRoute() {
+    final navigator = navigatorKey.currentState;
+    if (!_controller.isTabbed &&
+        _controller.currentNavigationStack.length < 2 &&
+        (navigator?.canPop() ?? false)) {
+      // An imperative route (showDialog, popup menu, dropdown) sits over the
+      // lone root page. Close that route instead of running the root callback,
+      // which on mobile home would call SystemNavigator.pop() and exit the app
+      // while the dialog is open.
+      navigator?.pop();
+      return SynchronousFuture(true);
+    }
+
     _controller.removePoppedPageIfNotUserInitiated(null);
 
     // Always return true to indicate we handled the pop request

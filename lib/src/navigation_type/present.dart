@@ -65,7 +65,7 @@ final class Present extends ViewNavigationType {
     return _PresentResultPage(
       key: key,
       name: screenName,
-      child: builder(context),
+      child: RootPopScope(child: builder(context)),
       completer: _dismissedCompleter,
       transition: transition,
     );

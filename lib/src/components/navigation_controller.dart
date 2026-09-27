@@ -185,6 +185,10 @@ interface class NavigationController extends ChangeNotifier {
   String get breadcrumb => _breadcrumb;
 
   /// Registers a dismiss callback for a specific page.
+  ///
+  /// The callback can veto a dismiss while the page is on top. At the root
+  /// (a lone page in single-stack mode) the return value is ignored; call
+  /// `SystemNavigator.pop()` to exit.
   void registerDismissCallback(
     ValueKey<String> pageKey,
     bool Function() callback,
@@ -262,9 +266,10 @@ interface class NavigationController extends ChangeNotifier {
 
     if (!action.skipKeyboardDismissal && hasKeyboard) {
       FocusManager.instance.primaryFocus?.unfocus();
-      _pendingNavigations.add(
-        (action: action, samePageReplaceType: samePageReplaceType),
-      );
+      _pendingNavigations.add((
+        action: action,
+        samePageReplaceType: samePageReplaceType,
+      ));
       _pendingKeyboardObserver ??= _KeyboardDismissObserver(
         onDismissed: () {
           _pendingKeyboardObserver = null;
@@ -317,8 +322,11 @@ interface class NavigationController extends ChangeNotifier {
 
     // Check if dismiss is allowed
     if (action is Dismiss) {
-      final allowed = _canDismissCurrentPage();
-      if (!allowed) {
+      // A programmatic Dismiss at a lone root page in single mode never calls
+      // the dismiss callback — it would exit the app on a stray Dismiss(). The
+      // stack, return value, and analytics stay as before.
+      if ((isTabbed || _resolvedNavigationStack.length > 1) &&
+          !_canDismissCurrentPage()) {
         return false;
       }
       // A Dismiss can carry a result value (e.g. `Dismiss(result: 'Red')`)
@@ -603,8 +611,34 @@ interface class NavigationController extends ChangeNotifier {
       return false;
     }
 
-    if (_isPerformingUserInitiatedNavigation ||
-        _resolvedNavigationStack.length < 2) {
+    // A removal is only actionable while the page it names is still the top of
+    // the resolved stack. Route exit animations outlive the post-frame guard
+    // reset, so a chained action (e.g. DismissToTab.thenNavigate) that removes
+    // several pages and pushes a new top in one pass gets this callback after
+    // the guard is already false — popping the *new* top instead of the page
+    // that actually went away. A stale removal is a no-op.
+    //
+    // Compares by screen name, which is not unique (see
+    // NavigationKey — keys are suffixed with a counter for exactly this
+    // reason). A stack holding the same screen twice can still mistake a
+    // stale removal for the live top. Upgrade path: carry the unique key on
+    // the Page and compare that — deferred because Page.name currently feeds
+    // currentConfiguration and deep-link parsing.
+    if (removedPageName != null &&
+        _resolvedNavigationStack.lastOrNull?.screenName != removedPageName) {
+      return false;
+    }
+
+    if (_isPerformingUserInitiatedNavigation) return false;
+    if (_resolvedNavigationStack.length < 2) {
+      // System back (popRoute passes null) on a lone root page: the root's
+      // dismiss callback decides (switch tab / SystemNavigator.pop()). Never
+      // commits a Dismiss; the stack is untouched either way.
+      if (removedPageName == null &&
+          !isTabbed &&
+          _resolvedNavigationStack.length == 1) {
+        return _canDismissCurrentPage();
+      }
       return false;
     }
 

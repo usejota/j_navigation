@@ -36,7 +36,7 @@ final class Push extends ViewNavigationType with DismissableNavigationType {
       return NoSwipePage<dynamic>(
         key: key,
         name: screenName,
-        child: builder(context),
+        child: RootPopScope(child: builder(context)),
       );
     }
 

@@ -41,7 +41,7 @@ final class PresentMultiple extends ViewNavigationType {
       key: key,
       name: screenName,
       fullscreenDialog: true,
-      child: builder(context),
+      child: RootPopScope(child: builder(context)),
     );
   }
 }

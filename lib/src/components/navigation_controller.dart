@@ -602,6 +602,9 @@ interface class NavigationController extends ChangeNotifier {
 
   /// Removes the popped page if the navigation was not user initiated and
   /// there is a page to be removed.
+  ///
+  /// At a lone root page in single-stack mode with a null name, runs the root's
+  /// dismiss callback and returns its result instead of removing anything.
   bool removePoppedPageIfNotUserInitiated(String? removedPageName) {
     // If this page was marked to ignore (from Replace), ignore it
     if (removedPageName != null &&

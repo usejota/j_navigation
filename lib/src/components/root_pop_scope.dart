@@ -4,8 +4,8 @@ import 'package:flutter/widgets.dart';
 /// (tabbed mode).
 final class SingleStackScope extends InheritedWidget {
   const SingleStackScope({required super.child, super.key});
-  static bool of(BuildContext c) =>
-      c.getInheritedWidgetOfExactType<SingleStackScope>() != null;
+  static bool isSingleStack(BuildContext context) =>
+      context.getInheritedWidgetOfExactType<SingleStackScope>() != null;
   @override
   bool updateShouldNotify(SingleStackScope old) => false;
 }
@@ -17,7 +17,7 @@ final class RootPopScope extends StatelessWidget {
   final Widget child;
   @override
   Widget build(BuildContext context) {
-    if (!SingleStackScope.of(context)) return child;
+    if (!SingleStackScope.isSingleStack(context)) return child;
     return PopScope(
       canPop: !(ModalRoute.isFirstOf(context) ?? false),
       child: child,

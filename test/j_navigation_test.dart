@@ -3421,7 +3421,7 @@ void main() {
     testWidgets('P5: ReplaceStack with same key keeps page state', (
       tester,
     ) async {
-      initCount = 0;
+      var initCount = 0;
       final key = NavigationKey.generate('B');
       final controller =
           NavigationController(
@@ -3436,7 +3436,8 @@ void main() {
             Push(
               analyticsIdentifiable: AnalyticsIdentifiable(
                 screenName: 'B',
-                builder: (context) => const Scaffold(body: _Counter()),
+                builder: (context) =>
+                    Scaffold(body: _Counter(onInit: () => initCount++)),
               ),
               navigationKey: key,
             ),
@@ -3454,7 +3455,8 @@ void main() {
         ReplaceStack(
           analyticsIdentifiable: AnalyticsIdentifiable(
             screenName: 'B',
-            builder: (context) => const Scaffold(body: _Counter()),
+            builder: (context) =>
+                Scaffold(body: _Counter(onInit: () => initCount++)),
           ),
           navigationKey: key,
           animationType: const ReplaceAnimationTypePush(),
@@ -3462,8 +3464,8 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(initCount, 1);
       expect(find.text('3'), findsOneWidget);
+      expect(initCount, 1);
     });
 
     testWidgets('P6: multi-page system back dismisses top through popRoute', (
@@ -3596,10 +3598,10 @@ void main() {
   });
 }
 
-int initCount = 0;
-
 class _Counter extends StatefulWidget {
-  const _Counter();
+  const _Counter({required this.onInit});
+
+  final VoidCallback onInit;
 
   @override
   State<_Counter> createState() => _CounterState();
@@ -3611,7 +3613,7 @@ class _CounterState extends State<_Counter> {
   @override
   void initState() {
     super.initState();
-    initCount++;
+    widget.onInit();
   }
 
   @override

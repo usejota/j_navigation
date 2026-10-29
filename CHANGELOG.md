@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.3
+
+### Fixed
+
+- `handleDeepLink` no longer waits for an unrelated frame to navigate: a
+  deep link whose route resolves asynchronously on an idle screen (for
+  example after a platform channel read) now schedules the frame its
+  navigation runs in, instead of hanging until the next touch.
+
 ## 1.0.2
 
 ### Fixed

@@ -255,6 +255,9 @@ final class NavigationRouterDelegate extends RouterDelegate<Object>
       if (pendingNavigationType is! NavigationType) return;
       _controller.navigate(pendingNavigationType);
     });
+    // A post-frame callback does not request a frame: a deep link resolved
+    // asynchronously on an idle screen would wait for the next touch.
+    SchedulerBinding.instance.scheduleFrame();
   }
 
   void _tryResolvePendingDeepLink() {

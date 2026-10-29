@@ -40,6 +40,13 @@ final class _TestFeatureProvider implements FeatureProvider {
   }
 }
 
+final class _DeferredFeatureProvider implements FeatureProvider {
+  final Completer<FeatureRoute?> route = Completer<FeatureRoute?>();
+
+  @override
+  Future<FeatureRoute?> featureRouteFor(String featureName) => route.future;
+}
+
 final class _CapturingFeatureRoute implements FeatureRoute {
   @override
   List<String> get piorNavigationRequired => const <String>[];
@@ -1992,6 +1999,51 @@ void main() {
     setUp(() {
       sink = _CapturingSink();
     });
+
+    testWidgets(
+      'a deep link resolved after the frame still navigates without another frame request',
+      (tester) async {
+        final controller = NavigationController(
+          Push(
+            analyticsIdentifiable: _createAnalytics(
+              (context) => const Text('Home'),
+              'Home',
+            ),
+          ),
+          analyticsSink: sink,
+        );
+        final featureProvider = _DeferredFeatureProvider();
+        final parser = NavigationRouteInformationParser(
+          featureProvider: featureProvider,
+        );
+        await tester.pumpWidget(
+          MaterialApp.router(
+            routerDelegate: NavigationRouterDelegate(
+              controller,
+              routeInformationParser: parser,
+            ),
+            routeInformationParser: parser,
+          ),
+        );
+
+        controller.handleDeepLink(Uri(path: '/feature'));
+        await tester.pump();
+        expect(tester.binding.hasScheduledFrame, isFalse);
+
+        // The route resolves after the deep link's frame, as a platform
+        // channel read would.
+        featureProvider.route.complete(_CapturingFeatureRoute());
+        await Future<void>.value();
+        await Future<void>.value();
+
+        expect(tester.binding.hasScheduledFrame, isTrue);
+        await tester.pumpAndSettle();
+        expect(
+          controller.currentNavigationStack.last.screenName,
+          'FallbackScreen',
+        );
+      },
+    );
 
     testWidgets(
       'NavigationRouterDelegate builds Navigator with correct pages',

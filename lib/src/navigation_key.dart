@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 /// pages that can be used both when creating the page and within the page's
 /// view model for registering callbacks.
 class NavigationKey {
-  NavigationKey._();
+  new _();
 
   static int _counter = 0;
 

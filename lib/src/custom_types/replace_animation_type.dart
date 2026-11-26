@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:j_navigation/src/analytics/analytics_identifiable.dart';
 import 'package:j_navigation/src/navigation_type/navigation_type.dart';
+import 'package:material_ui/material_ui.dart';
 
 abstract base class ReplaceAnimationType {
-  const ReplaceAnimationType({required this.animated});
+  const new({required this.animated});
 
   final bool animated;
   bool get swipeToDismissEnabled;
@@ -15,8 +15,7 @@ abstract base class ReplaceAnimationType {
 }
 
 final class ReplaceAnimationTypeNone extends ReplaceAnimationType {
-  const ReplaceAnimationTypeNone({this.swipeToDismissEnabled = true})
-    : super(animated: false);
+  const new({this.swipeToDismissEnabled = true}) : super(animated: false);
 
   @override
   final bool swipeToDismissEnabled;
@@ -34,10 +33,7 @@ final class ReplaceAnimationTypeNone extends ReplaceAnimationType {
 }
 
 final class ReplaceAnimationTypePush extends ReplaceAnimationType {
-  const ReplaceAnimationTypePush({
-    this.swipeToDismissEnabled = true,
-    super.animated = true,
-  });
+  const new({this.swipeToDismissEnabled = true, super.animated = true});
 
   @override
   final bool swipeToDismissEnabled;
@@ -55,7 +51,7 @@ final class ReplaceAnimationTypePush extends ReplaceAnimationType {
 }
 
 final class ReplaceAnimationTypePresent extends ReplaceAnimationType {
-  const ReplaceAnimationTypePresent({super.animated = true});
+  const new({super.animated = true});
 
   @override
   bool get swipeToDismissEnabled => true;
@@ -72,7 +68,7 @@ final class ReplaceAnimationTypePresent extends ReplaceAnimationType {
 }
 
 final class ReplaceAnimationTypeCustom extends ReplaceAnimationType {
-  const ReplaceAnimationTypeCustom({
+  const new({
     required this.handler,
     required this.swipeToDismissEnabled,
     super.animated = true,

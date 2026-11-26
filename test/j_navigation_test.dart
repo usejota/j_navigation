@@ -4,12 +4,11 @@
 
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-
 import 'package:j_navigation/navigation.dart';
 import 'package:j_navigation/test_exports.dart';
+import 'package:material_ui/material_ui.dart';
 
 // Helper function to create navigation types with analytics
 AnalyticsIdentifiable _createAnalytics(
@@ -23,14 +22,14 @@ AnalyticsIdentifiable _createAnalytics(
 }
 
 final class _NoopFeatureProvider implements FeatureProvider {
-  const _NoopFeatureProvider();
+  const new();
 
   @override
   Future<FeatureRoute?> featureRouteFor(String featureName) async => null;
 }
 
 final class _TestFeatureProvider implements FeatureProvider {
-  _TestFeatureProvider(this._routes);
+  new(this._routes);
 
   final Map<String, FeatureRoute> _routes;
 
@@ -230,22 +229,13 @@ void main() {
 
     testWidgets('PopTo pops back to first match from top', (tester) async {
       final page1 = Push(
-        analyticsIdentifiable: _createAnalytics(
-          (context) => Container(),
-          'A',
-        ),
+        analyticsIdentifiable: _createAnalytics((context) => Container(), 'A'),
       );
       final page2 = Push(
-        analyticsIdentifiable: _createAnalytics(
-          (context) => Container(),
-          'B',
-        ),
+        analyticsIdentifiable: _createAnalytics((context) => Container(), 'B'),
       );
       final page3 = Push(
-        analyticsIdentifiable: _createAnalytics(
-          (context) => Container(),
-          'A',
-        ),
+        analyticsIdentifiable: _createAnalytics((context) => Container(), 'A'),
       );
       final currentStack = [page1, page2, page3];
 
@@ -314,9 +304,7 @@ void main() {
       expect(newStack.first.screenName, 'Replace');
     });
 
-    testWidgets('ReplaceTop replaces the first page', (
-      tester,
-    ) async {
+    testWidgets('ReplaceTop replaces the first page', (tester) async {
       final replace = ReplaceTop(
         analyticsIdentifiable: _createAnalytics(
           (context) => Container(),
@@ -516,28 +504,27 @@ void main() {
       expect((route as MaterialPageRoute<dynamic>).fullscreenDialog, true);
     });
 
-    testWidgets(
-      'ReplaceStack respects animationType parameter',
-      (tester) async {
-        final replaceAnimated = ReplaceStack(
-          analyticsIdentifiable: _createAnalytics((context) => Container()),
-          animationType: const ReplaceAnimationTypePush(),
-        );
-        final replaceNotAnimated = ReplaceStack(
-          analyticsIdentifiable: _createAnalytics((context) => Container()),
-          animationType: const ReplaceAnimationTypeNone(),
-        );
+    testWidgets('ReplaceStack respects animationType parameter', (
+      tester,
+    ) async {
+      final replaceAnimated = ReplaceStack(
+        analyticsIdentifiable: _createAnalytics((context) => Container()),
+        animationType: const ReplaceAnimationTypePush(),
+      );
+      final replaceNotAnimated = ReplaceStack(
+        analyticsIdentifiable: _createAnalytics((context) => Container()),
+        animationType: const ReplaceAnimationTypeNone(),
+      );
 
-        expect(replaceAnimated.animated, true);
-        expect(replaceNotAnimated.animated, false);
+      expect(replaceAnimated.animated, true);
+      expect(replaceNotAnimated.animated, false);
 
-        final animatedPage = replaceAnimated.buildPage(mockContext);
-        final notAnimatedPage = replaceNotAnimated.buildPage(mockContext);
+      final animatedPage = replaceAnimated.buildPage(mockContext);
+      final notAnimatedPage = replaceNotAnimated.buildPage(mockContext);
 
-        expect(animatedPage, isA<MaterialPage<dynamic>>());
-        expect(notAnimatedPage, isA<NoAnimationPage<dynamic>>());
-      },
-    );
+      expect(animatedPage, isA<MaterialPage<dynamic>>());
+      expect(notAnimatedPage, isA<NoAnimationPage<dynamic>>());
+    });
 
     testWidgets('ReplaceStack defaults to animated=true', (tester) async {
       final replace = ReplaceStack(
@@ -690,10 +677,7 @@ void main() {
       final initialPage = Push(
         analyticsIdentifiable: _createAnalytics((context) => Container()),
       );
-      final controller = NavigationController(
-        initialPage,
-        analyticsSink: sink,
-      );
+      final controller = NavigationController(initialPage, analyticsSink: sink);
 
       final stack = controller.currentNavigationStack;
       expect(stack.length, 1);
@@ -767,10 +751,8 @@ void main() {
           'ModalPage',
         ),
       );
-      final controller = NavigationController(
-        initialPage,
-        analyticsSink: sink,
-      )..navigate(modalPage);
+      final controller = NavigationController(initialPage, analyticsSink: sink)
+        ..navigate(modalPage);
       await controller.flushAnalytics();
 
       expect(sink.events.length, 3);
@@ -828,10 +810,7 @@ void main() {
         animationType: const ReplaceAnimationTypePush(),
       );
 
-      final controller = NavigationController(
-        initialPage,
-        analyticsSink: sink,
-      );
+      final controller = NavigationController(initialPage, analyticsSink: sink);
 
       sink.events.clear();
 
@@ -911,10 +890,7 @@ void main() {
           'DetailsPage',
         ),
       );
-      final controller = NavigationController(
-        initialPage,
-        analyticsSink: sink,
-      );
+      final controller = NavigationController(initialPage, analyticsSink: sink);
 
       sink.events.clear();
 
@@ -1000,10 +976,7 @@ void main() {
           'MoreDetailsPage',
         ),
       );
-      final controller = NavigationController(
-        initialPage,
-        analyticsSink: sink,
-      );
+      final controller = NavigationController(initialPage, analyticsSink: sink);
 
       sink.events.clear();
 
@@ -1062,10 +1035,7 @@ void main() {
           'SwipePage',
         ),
       );
-      final controller = NavigationController(
-        initialPage,
-        analyticsSink: sink,
-      );
+      final controller = NavigationController(initialPage, analyticsSink: sink);
 
       sink.events.clear();
 
@@ -1207,10 +1177,7 @@ void main() {
           'DetailsPage',
         ),
       );
-      final controller = NavigationController(
-        initialPage,
-        analyticsSink: sink,
-      );
+      final controller = NavigationController(initialPage, analyticsSink: sink);
       await Future<void>.delayed(const Duration(seconds: 2));
       controller.navigate(secondPage);
       await controller.flushAnalytics();
@@ -1447,10 +1414,7 @@ void main() {
       final initialPage = Push(
         analyticsIdentifiable: _createAnalytics((context) => Container()),
       );
-      final controller = NavigationController(
-        initialPage,
-        analyticsSink: sink,
-      );
+      final controller = NavigationController(initialPage, analyticsSink: sink);
       final result = controller.removePoppedPageIfNotUserInitiated(null);
       expect(result, isTrue);
 
@@ -1475,10 +1439,8 @@ void main() {
           animationType: const ReplaceAnimationTypePush(),
         );
 
-        final controller = NavigationController(
-          homePage,
-          analyticsSink: sink,
-        )..navigate(replacePage);
+        final controller = NavigationController(homePage, analyticsSink: sink)
+          ..navigate(replacePage);
 
         // Verify that Replace created the new stack
         var stack = controller.currentNavigationStack;
@@ -1524,13 +1486,9 @@ void main() {
           animationType: const ReplaceAnimationTypePush(),
         );
 
-        final controller =
-            NavigationController(
-                page1,
-                analyticsSink: sink,
-              )
-              ..navigate(page2)
-              ..navigate(replacePage);
+        final controller = NavigationController(page1, analyticsSink: sink)
+          ..navigate(page2)
+          ..navigate(replacePage);
 
         // Both Page1 and Page2 should be marked to ignore
         final removed1 = controller.removePoppedPageIfNotUserInitiated('Page1');
@@ -1546,92 +1504,78 @@ void main() {
       },
     );
 
-    test(
-      'NavigationController does not ignore non-Replace page removals',
-      () {
-        final homePage = Push(
-          analyticsIdentifiable: _createAnalytics(
-            (context) => Container(),
-            'HomePage',
-          ),
-        );
-        final replacePage = ReplaceStack(
-          analyticsIdentifiable: _createAnalytics(
-            (context) => Container(),
-            'ReplacePage',
-          ),
-          animationType: const ReplaceAnimationTypePush(),
-        );
+    test('NavigationController does not ignore non-Replace page removals', () {
+      final homePage = Push(
+        analyticsIdentifiable: _createAnalytics(
+          (context) => Container(),
+          'HomePage',
+        ),
+      );
+      final replacePage = ReplaceStack(
+        analyticsIdentifiable: _createAnalytics(
+          (context) => Container(),
+          'ReplacePage',
+        ),
+        animationType: const ReplaceAnimationTypePush(),
+      );
 
-        final controller = NavigationController(
-          homePage,
-          analyticsSink: sink,
-        )..navigate(replacePage);
+      final controller = NavigationController(homePage, analyticsSink: sink)
+        ..navigate(replacePage);
 
-        // Process HomePage removal from Replace (should be ignored)
-        var removed = controller.removePoppedPageIfNotUserInitiated('HomePage');
-        expect(removed, false);
+      // Process HomePage removal from Replace (should be ignored)
+      var removed = controller.removePoppedPageIfNotUserInitiated('HomePage');
+      expect(removed, false);
 
-        // Try to remove a page that was NOT part of Replace operation
-        // This should not be ignored (but will return false due to stack size)
-        removed = controller.removePoppedPageIfNotUserInitiated(
-          'SomeOtherPage',
-        );
-        expect(removed, false); // Stack has only 1 page, so can't remove
+      // Try to remove a page that was NOT part of Replace operation
+      // This should not be ignored (but will return false due to stack size)
+      removed = controller.removePoppedPageIfNotUserInitiated('SomeOtherPage');
+      expect(removed, false); // Stack has only 1 page, so can't remove
 
-        // Verify the ignore list only affects pages from the Replace operation
-        final stack = controller.currentNavigationStack;
-        expect(stack.length, 1);
-        expect(stack.first.screenName, 'ReplacePage');
-      },
-    );
+      // Verify the ignore list only affects pages from the Replace operation
+      final stack = controller.currentNavigationStack;
+      expect(stack.length, 1);
+      expect(stack.first.screenName, 'ReplacePage');
+    });
 
-    test(
-      'NavigationController clears ignore list as pages are processed',
-      () {
-        final page1 = Push(
-          analyticsIdentifiable: _createAnalytics(
-            (context) => Container(),
-            'Page1',
-          ),
-        );
-        final page2 = Push(
-          analyticsIdentifiable: _createAnalytics(
-            (context) => Container(),
-            'Page2',
-          ),
-        );
-        final replacePage = ReplaceStack(
-          analyticsIdentifiable: _createAnalytics(
-            (context) => Container(),
-            'ReplacePage',
-          ),
-          animationType: const ReplaceAnimationTypePush(),
-        );
+    test('NavigationController clears ignore list as pages are processed', () {
+      final page1 = Push(
+        analyticsIdentifiable: _createAnalytics(
+          (context) => Container(),
+          'Page1',
+        ),
+      );
+      final page2 = Push(
+        analyticsIdentifiable: _createAnalytics(
+          (context) => Container(),
+          'Page2',
+        ),
+      );
+      final replacePage = ReplaceStack(
+        analyticsIdentifiable: _createAnalytics(
+          (context) => Container(),
+          'ReplacePage',
+        ),
+        animationType: const ReplaceAnimationTypePush(),
+      );
 
-        final controller =
-            NavigationController(
-                page1,
-                analyticsSink: sink,
-              )
-              ..navigate(page2)
-              ..navigate(replacePage);
+      final controller = NavigationController(page1, analyticsSink: sink)
+        ..navigate(page2)
+        ..navigate(replacePage);
 
-        // Process Page1 removal
-        var removed1 = controller.removePoppedPageIfNotUserInitiated('Page1');
-        expect(removed1, false);
+      // Process Page1 removal
+      var removed1 = controller.removePoppedPageIfNotUserInitiated('Page1');
+      expect(removed1, false);
 
-        // Process Page2 removal
-        final removed2 = controller.removePoppedPageIfNotUserInitiated('Page2');
-        expect(removed2, false);
+      // Process Page2 removal
+      final removed2 = controller.removePoppedPageIfNotUserInitiated('Page2');
+      expect(removed2, false);
 
-        // Try to process Page1 removal again (should not be ignored anymore)
-        // Since we're not in user navigation and stack has only 1 page,
-        // it returns false
-        removed1 = controller.removePoppedPageIfNotUserInitiated('Page1');
-        expect(removed1, false);
-      },
-    );
+      // Try to process Page1 removal again (should not be ignored anymore)
+      // Since we're not in user navigation and stack has only 1 page,
+      // it returns false
+      removed1 = controller.removePoppedPageIfNotUserInitiated('Page1');
+      expect(removed1, false);
+    });
 
     test(
       'NavigationController Replace with hiddenPages ignores all removed pages',
@@ -1657,10 +1601,8 @@ void main() {
           animationType: const ReplaceAnimationTypePush(),
         );
 
-        final controller = NavigationController(
-          homePage,
-          analyticsSink: sink,
-        )..navigate(replacePage);
+        final controller = NavigationController(homePage, analyticsSink: sink)
+          ..navigate(replacePage);
 
         // Verify the stack has 2 pages (hidden + main)
         var stack = controller.currentNavigationStack;
@@ -1703,13 +1645,9 @@ void main() {
           animationType: const ReplaceAnimationTypePush(),
         );
 
-        final controller =
-            NavigationController(
-                page1,
-                analyticsSink: sink,
-              )
-              ..navigate(page2)
-              ..navigate(replacePage);
+        final controller = NavigationController(page1, analyticsSink: sink)
+          ..navigate(page2)
+          ..navigate(replacePage);
 
         // Verify that ReplaceTop replaced the top page
         var stack = controller.currentNavigationStack;
@@ -1719,9 +1657,7 @@ void main() {
 
         // Simulate Flutter's Navigator removing Page2
         // This should be ignored because Page2 was marked for removal
-        final removed = controller.removePoppedPageIfNotUserInitiated(
-          'Page2',
-        );
+        final removed = controller.removePoppedPageIfNotUserInitiated('Page2');
 
         // Should return false (removal was ignored)
         expect(removed, false);
@@ -1734,66 +1670,59 @@ void main() {
       },
     );
 
-    test(
-      'NavigationController handles ReplaceTop with multiple replaces',
-      () {
-        final page1 = Push(
-          analyticsIdentifiable: _createAnalytics(
-            (context) => Container(),
-            'Page1',
-          ),
-        );
-        final page2 = Push(
-          analyticsIdentifiable: _createAnalytics(
-            (context) => Container(),
-            'Page2',
-          ),
-        );
-        final replacePage1 = ReplaceTop(
-          analyticsIdentifiable: _createAnalytics(
-            (context) => Container(),
-            'ReplacePage1',
-          ),
-          animationType: const ReplaceAnimationTypePush(),
-        );
-        final replacePage2 = ReplaceTop(
-          analyticsIdentifiable: _createAnalytics(
-            (context) => Container(),
-            'ReplacePage2',
-          ),
-          animationType: const ReplaceAnimationTypePush(),
-        );
-
-        final controller =
-            NavigationController(
-                page1,
-                analyticsSink: sink,
-              )
-              ..navigate(page2)
-              ..navigate(replacePage1);
-
-        // First replacement should work
-        final removed1 = controller.removePoppedPageIfNotUserInitiated('Page2');
-        expect(removed1, false);
-
-        var stack = controller.currentNavigationStack;
-        expect(stack.length, 2);
-        expect(stack[1].screenName, 'ReplacePage1');
-
-        // Second replacement
-        controller.navigate(replacePage2);
-        final removed2 = controller.removePoppedPageIfNotUserInitiated(
+    test('NavigationController handles ReplaceTop with multiple replaces', () {
+      final page1 = Push(
+        analyticsIdentifiable: _createAnalytics(
+          (context) => Container(),
+          'Page1',
+        ),
+      );
+      final page2 = Push(
+        analyticsIdentifiable: _createAnalytics(
+          (context) => Container(),
+          'Page2',
+        ),
+      );
+      final replacePage1 = ReplaceTop(
+        analyticsIdentifiable: _createAnalytics(
+          (context) => Container(),
           'ReplacePage1',
-        );
-        expect(removed2, false);
+        ),
+        animationType: const ReplaceAnimationTypePush(),
+      );
+      final replacePage2 = ReplaceTop(
+        analyticsIdentifiable: _createAnalytics(
+          (context) => Container(),
+          'ReplacePage2',
+        ),
+        animationType: const ReplaceAnimationTypePush(),
+      );
 
-        // Stack should have the second replacement
-        stack = controller.currentNavigationStack;
-        expect(stack.length, 2);
-        expect(stack[0].screenName, 'Page1');
-        expect(stack[1].screenName, 'ReplacePage2');
-      },
-    );
+      final controller = NavigationController(page1, analyticsSink: sink)
+        ..navigate(page2)
+        ..navigate(replacePage1);
+
+      // First replacement should work
+      final removed1 = controller.removePoppedPageIfNotUserInitiated('Page2');
+      expect(removed1, false);
+
+      var stack = controller.currentNavigationStack;
+      expect(stack.length, 2);
+      expect(stack[1].screenName, 'ReplacePage1');
+
+      // Second replacement
+      controller.navigate(replacePage2);
+      final removed2 = controller.removePoppedPageIfNotUserInitiated(
+        'ReplacePage1',
+      );
+      expect(removed2, false);
+
+      // Stack should have the second replacement
+      stack = controller.currentNavigationStack;
+      expect(stack.length, 2);
+      expect(stack[0].screenName, 'Page1');
+      expect(stack[1].screenName, 'ReplacePage2');
+    });
 
     test(
       'NavigationController compresses history but keeps breadcrumb',
@@ -1930,29 +1859,26 @@ void main() {
       },
     );
 
-    test(
-      'restoreRouteInformation builds a URL from the top screen name',
-      () {
-        final parser = NavigationRouteInformationParser(
-          featureProvider: const _NoopFeatureProvider(),
-        );
-        final config = (
-          requiredPriorNavigation: const <String>[],
-          navigationType: Push(
-            analyticsIdentifiable: _createAnalytics(
-              (context) => Container(),
-              'ProductDetails',
-            ),
+    test('restoreRouteInformation builds a URL from the top screen name', () {
+      final parser = NavigationRouteInformationParser(
+        featureProvider: const _NoopFeatureProvider(),
+      );
+      final config = (
+        requiredPriorNavigation: const <String>[],
+        navigationType: Push(
+          analyticsIdentifiable: _createAnalytics(
+            (context) => Container(),
+            'ProductDetails',
           ),
-          branchScreenName: null,
-        );
+        ),
+        branchScreenName: null,
+      );
 
-        final info = parser.restoreRouteInformation(config);
+      final info = parser.restoreRouteInformation(config);
 
-        expect(info, isNotNull);
-        expect(info!.uri.pathSegments.last, 'ProductDetails');
-      },
-    );
+      expect(info, isNotNull);
+      expect(info!.uri.pathSegments.last, 'ProductDetails');
+    });
 
     test('restoreRouteInformation returns null for non-RouteConfig', () {
       final parser = NavigationRouteInformationParser(
@@ -2573,213 +2499,195 @@ void main() {
           'HomePage',
         ),
       );
-      navigationController = NavigationController(
-        home,
-        analyticsSink: sink,
-      );
+      navigationController = NavigationController(home, analyticsSink: sink);
     });
 
-    test(
-      'SamePageNavigationReplaceTop replaces the current page with '
-      'the new page',
-      () async {
-        final newPage = Push(
+    test('SamePageNavigationReplaceTop replaces the current page with '
+        'the new page', () async {
+      final newPage = Push(
+        analyticsIdentifiable: _createAnalytics(
+          (context) => Container(),
+          'NewPage',
+        ),
+      );
+      final samePage = Push(
+        analyticsIdentifiable: _createAnalytics(
+          (context) => Container(),
+          'NewPage',
+        ),
+      );
+
+      // Navigate to the new page
+      navigationController.navigate(newPage);
+      expect(navigationController.currentNavigationStack.length, 2);
+      expect(
+        navigationController.currentNavigationStack.last.screenName,
+        'NewPage',
+      );
+
+      // Navigate to the same page
+      navigationController.navigate(samePage);
+      expect(navigationController.currentNavigationStack.length, 2);
+      expect(
+        navigationController.currentNavigationStack.last.screenName,
+        'NewPage',
+      );
+
+      await navigationController.flushAnalytics();
+      expect(sink.events.length, equals(5));
+      final pushEvent = sink.events[2];
+      if (pushEvent is NavigationScreenEnterEvent) {
+        expect(pushEvent.screenName, 'NewPage');
+        expect(pushEvent.sourceScreen, 'HomePage');
+        expect(pushEvent.navigationMethod, 'Push');
+        expect(pushEvent.breadcrumb, 'root:HomePage > Push:NewPage');
+      } else {
+        fail('Push event is not a ScreenEnterEvent');
+      }
+      final replaceEvent = sink.events.last;
+      if (replaceEvent is NavigationScreenEnterEvent) {
+        expect(replaceEvent.screenName, 'NewPage');
+        expect(replaceEvent.sourceScreen, 'NewPage');
+        expect(replaceEvent.navigationMethod, 'ReplaceTop');
+        expect(
+          replaceEvent.breadcrumb,
+          'root:HomePage > Push:NewPage > ReplaceTop:NewPage',
+        );
+      } else {
+        fail('Replace event is not a ScreenEnterEvent');
+      }
+    });
+
+    test('SamePageNavigationCustomReplace replaces the current page with '
+        'a custom NavigationType', () async {
+      final newPage = Push(
+        analyticsIdentifiable: _createAnalytics(
+          (context) => Container(),
+          'NewPage',
+        ),
+      );
+      final samePage = Push(
+        analyticsIdentifiable: _createAnalytics(
+          (context) => Container(),
+          'NewPage',
+        ),
+      );
+      final customPageReplacer = SamePageNavigationCustomReplace(
+        handler: (viewNavigationType) => _DismissAndPresent(
           analyticsIdentifiable: _createAnalytics(
-            (context) => Container(),
-            'NewPage',
+            viewNavigationType.builder,
+            viewNavigationType.screenName,
           ),
-        );
-        final samePage = Push(
-          analyticsIdentifiable: _createAnalytics(
-            (context) => Container(),
-            'NewPage',
-          ),
-        );
+        ),
+      );
 
-        // Navigate to the new page
-        navigationController.navigate(
-          newPage,
-        );
-        expect(navigationController.currentNavigationStack.length, 2);
+      // Navigate to the new page
+      navigationController.navigate(newPage);
+      expect(navigationController.currentNavigationStack.length, 2);
+      expect(
+        navigationController.currentNavigationStack.last.screenName,
+        'NewPage',
+      );
+
+      // Navigate to the same page
+      navigationController.navigate(
+        samePage,
+        samePageReplaceType: customPageReplacer,
+      );
+      expect(navigationController.currentNavigationStack.length, 2);
+      expect(
+        navigationController.currentNavigationStack.last.screenName,
+        'NewPage',
+      );
+
+      await navigationController.flushAnalytics();
+      expect(sink.events.length, equals(5));
+      final pushEvent = sink.events[2];
+      if (pushEvent is NavigationScreenEnterEvent) {
+        expect(pushEvent.screenName, 'NewPage');
+        expect(pushEvent.sourceScreen, 'HomePage');
+        expect(pushEvent.navigationMethod, 'Push');
+        expect(pushEvent.breadcrumb, 'root:HomePage > Push:NewPage');
+      } else {
+        fail('Push event is not a ScreenEnterEvent');
+      }
+
+      final replaceEvent = sink.events.last;
+      if (replaceEvent is NavigationScreenEnterEvent) {
+        expect(replaceEvent.screenName, 'NewPage');
+        expect(replaceEvent.sourceScreen, 'NewPage');
+        expect(replaceEvent.navigationMethod, 'DismissAndPresent');
         expect(
-          navigationController.currentNavigationStack.last.screenName,
-          'NewPage',
+          replaceEvent.breadcrumb,
+          'root:HomePage > Push:NewPage > DismissAndPresent:NewPage',
         );
+      } else {
+        fail('Replace event is not a ScreenEnterEvent');
+      }
+    });
 
-        // Navigate to the same page
-        navigationController.navigate(samePage);
-        expect(navigationController.currentNavigationStack.length, 2);
+    test('SamePageNavigationNoReplace allows multiple navigations '
+        'to the same page', () async {
+      final newPage = Push(
+        analyticsIdentifiable: _createAnalytics(
+          (context) => Container(),
+          'NewPage',
+        ),
+      );
+      final samePage = Push(
+        analyticsIdentifiable: _createAnalytics(
+          (context) => Container(),
+          'NewPage',
+        ),
+      );
+
+      // Navigate to the new page
+      navigationController.navigate(newPage);
+      expect(navigationController.currentNavigationStack.length, 2);
+      expect(
+        navigationController.currentNavigationStack.last.screenName,
+        'NewPage',
+      );
+
+      // Navigate to the same page
+      navigationController.navigate(
+        samePage,
+        samePageReplaceType: const SamePageNavigationNoReplace(),
+      );
+      expect(navigationController.currentNavigationStack.length, 3);
+      expect(
+        navigationController.currentNavigationStack[1].screenName,
+        'NewPage',
+      );
+      expect(
+        navigationController.currentNavigationStack.last.screenName,
+        'NewPage',
+      );
+
+      await navigationController.flushAnalytics();
+      expect(sink.events.length, equals(5));
+      final pushEvent = sink.events[2];
+      if (pushEvent is NavigationScreenEnterEvent) {
+        expect(pushEvent.screenName, 'NewPage');
+        expect(pushEvent.sourceScreen, 'HomePage');
+        expect(pushEvent.navigationMethod, 'Push');
+        expect(pushEvent.breadcrumb, 'root:HomePage > Push:NewPage');
+      } else {
+        fail('Push event is not a ScreenEnterEvent');
+      }
+      final pushEvent2 = sink.events.last;
+      if (pushEvent2 is NavigationScreenEnterEvent) {
+        expect(pushEvent2.screenName, 'NewPage');
+        expect(pushEvent2.sourceScreen, 'NewPage');
+        expect(pushEvent2.navigationMethod, 'Push');
         expect(
-          navigationController.currentNavigationStack.last.screenName,
-          'NewPage',
+          pushEvent2.breadcrumb,
+          'root:HomePage > Push:NewPage > Push:NewPage',
         );
-
-        await navigationController.flushAnalytics();
-        expect(sink.events.length, equals(5));
-        final pushEvent = sink.events[2];
-        if (pushEvent is NavigationScreenEnterEvent) {
-          expect(pushEvent.screenName, 'NewPage');
-          expect(pushEvent.sourceScreen, 'HomePage');
-          expect(pushEvent.navigationMethod, 'Push');
-          expect(pushEvent.breadcrumb, 'root:HomePage > Push:NewPage');
-        } else {
-          fail('Push event is not a ScreenEnterEvent');
-        }
-        final replaceEvent = sink.events.last;
-        if (replaceEvent is NavigationScreenEnterEvent) {
-          expect(replaceEvent.screenName, 'NewPage');
-          expect(replaceEvent.sourceScreen, 'NewPage');
-          expect(replaceEvent.navigationMethod, 'ReplaceTop');
-          expect(
-            replaceEvent.breadcrumb,
-            'root:HomePage > Push:NewPage > ReplaceTop:NewPage',
-          );
-        } else {
-          fail('Replace event is not a ScreenEnterEvent');
-        }
-      },
-    );
-
-    test(
-      'SamePageNavigationCustomReplace replaces the current page with '
-      'a custom NavigationType',
-      () async {
-        final newPage = Push(
-          analyticsIdentifiable: _createAnalytics(
-            (context) => Container(),
-            'NewPage',
-          ),
-        );
-        final samePage = Push(
-          analyticsIdentifiable: _createAnalytics(
-            (context) => Container(),
-            'NewPage',
-          ),
-        );
-        final customPageReplacer = SamePageNavigationCustomReplace(
-          handler: (viewNavigationType) => _DismissAndPresent(
-            analyticsIdentifiable: _createAnalytics(
-              viewNavigationType.builder,
-              viewNavigationType.screenName,
-            ),
-          ),
-        );
-
-        // Navigate to the new page
-        navigationController.navigate(
-          newPage,
-        );
-        expect(navigationController.currentNavigationStack.length, 2);
-        expect(
-          navigationController.currentNavigationStack.last.screenName,
-          'NewPage',
-        );
-
-        // Navigate to the same page
-        navigationController.navigate(
-          samePage,
-          samePageReplaceType: customPageReplacer,
-        );
-        expect(navigationController.currentNavigationStack.length, 2);
-        expect(
-          navigationController.currentNavigationStack.last.screenName,
-          'NewPage',
-        );
-
-        await navigationController.flushAnalytics();
-        expect(sink.events.length, equals(5));
-        final pushEvent = sink.events[2];
-        if (pushEvent is NavigationScreenEnterEvent) {
-          expect(pushEvent.screenName, 'NewPage');
-          expect(pushEvent.sourceScreen, 'HomePage');
-          expect(pushEvent.navigationMethod, 'Push');
-          expect(pushEvent.breadcrumb, 'root:HomePage > Push:NewPage');
-        } else {
-          fail('Push event is not a ScreenEnterEvent');
-        }
-
-        final replaceEvent = sink.events.last;
-        if (replaceEvent is NavigationScreenEnterEvent) {
-          expect(replaceEvent.screenName, 'NewPage');
-          expect(replaceEvent.sourceScreen, 'NewPage');
-          expect(replaceEvent.navigationMethod, 'DismissAndPresent');
-          expect(
-            replaceEvent.breadcrumb,
-            'root:HomePage > Push:NewPage > DismissAndPresent:NewPage',
-          );
-        } else {
-          fail('Replace event is not a ScreenEnterEvent');
-        }
-      },
-    );
-
-    test(
-      'SamePageNavigationNoReplace allows multiple navigations '
-      'to the same page',
-      () async {
-        final newPage = Push(
-          analyticsIdentifiable: _createAnalytics(
-            (context) => Container(),
-            'NewPage',
-          ),
-        );
-        final samePage = Push(
-          analyticsIdentifiable: _createAnalytics(
-            (context) => Container(),
-            'NewPage',
-          ),
-        );
-
-        // Navigate to the new page
-        navigationController.navigate(
-          newPage,
-        );
-        expect(navigationController.currentNavigationStack.length, 2);
-        expect(
-          navigationController.currentNavigationStack.last.screenName,
-          'NewPage',
-        );
-
-        // Navigate to the same page
-        navigationController.navigate(
-          samePage,
-          samePageReplaceType: const SamePageNavigationNoReplace(),
-        );
-        expect(navigationController.currentNavigationStack.length, 3);
-        expect(
-          navigationController.currentNavigationStack[1].screenName,
-          'NewPage',
-        );
-        expect(
-          navigationController.currentNavigationStack.last.screenName,
-          'NewPage',
-        );
-
-        await navigationController.flushAnalytics();
-        expect(sink.events.length, equals(5));
-        final pushEvent = sink.events[2];
-        if (pushEvent is NavigationScreenEnterEvent) {
-          expect(pushEvent.screenName, 'NewPage');
-          expect(pushEvent.sourceScreen, 'HomePage');
-          expect(pushEvent.navigationMethod, 'Push');
-          expect(pushEvent.breadcrumb, 'root:HomePage > Push:NewPage');
-        } else {
-          fail('Push event is not a ScreenEnterEvent');
-        }
-        final pushEvent2 = sink.events.last;
-        if (pushEvent2 is NavigationScreenEnterEvent) {
-          expect(pushEvent2.screenName, 'NewPage');
-          expect(pushEvent2.sourceScreen, 'NewPage');
-          expect(pushEvent2.navigationMethod, 'Push');
-          expect(
-            pushEvent2.breadcrumb,
-            'root:HomePage > Push:NewPage > Push:NewPage',
-          );
-        } else {
-          fail('Push event is not a ScreenEnterEvent');
-        }
-      },
-    );
+      } else {
+        fail('Push event is not a ScreenEnterEvent');
+      }
+    });
   });
 
   group('NavigationTheme Tests', () {
@@ -3033,10 +2941,7 @@ void main() {
         // Register a navigation callback on branch B's root that blocks all
         // actions, so the chained Push is rejected.
         final bRoot = controller.stackForBranch(2).first;
-        controller.registerNavigationCallback(
-          bRoot.key,
-          (action) => false,
-        );
+        controller.registerNavigationCallback(bRoot.key, (action) => false);
 
         // SwitchTab(2, thenNavigate: Push) — the Push is blocked, but the
         // branch must still switch and the controller must not desync.
@@ -3270,10 +3175,7 @@ void main() {
     ) async {
       Future<void> check(ViewNavigationType Function() make) async {
         platformCalls.clear();
-        final controller = NavigationController(
-          make(),
-          analyticsSink: sink,
-        );
+        final controller = NavigationController(make(), analyticsSink: sink);
         await pumpApp(tester, controller);
         expect(handlesBack(), isNotEmpty);
         expect(handlesBack().last, isTrue);
@@ -3399,9 +3301,7 @@ void main() {
 
     testWidgets(
       'P3b: named root removal and guard-window removal skip callback',
-      (
-        tester,
-      ) async {
+      (tester) async {
         var calls = 0;
         final key = NavigationKey.generate('Root');
         final controller = _rootController('Root', key);
@@ -3604,9 +3504,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(calls, 0);
       expect(
-        find.byWidgetPredicate(
-          (w) => w is PopScope && !w.canPop,
-        ),
+        find.byWidgetPredicate((w) => w is PopScope && !w.canPop),
         findsNothing,
       );
 
@@ -3630,11 +3528,9 @@ void main() {
       await pumpApp(tester, controller);
 
       final rootContext = tester.element(find.text('Root'));
-      unawaited(
-        showDialog<void>(
-          context: rootContext,
-          builder: (context) => const AlertDialog(content: Text('Dialog')),
-        ),
+      showDialog<void>(
+        context: rootContext,
+        builder: (context) => const AlertDialog(content: Text('Dialog')),
       );
       await tester.pumpAndSettle();
       expect(find.text('Dialog'), findsOneWidget);
@@ -3651,7 +3547,7 @@ void main() {
 }
 
 class _Counter extends StatefulWidget {
-  const _Counter({required this.onInit});
+  const new({required this.onInit});
 
   final VoidCallback onInit;
 
@@ -3745,7 +3641,7 @@ class _MockContext implements BuildContext {
 BuildContext get mockContext => _MockContext();
 
 final class _DismissAndPresent extends ViewNavigationType {
-  _DismissAndPresent({required super.analyticsIdentifiable});
+  new({required super.analyticsIdentifiable});
 
   @override
   String get analyticsName => 'DismissAndPresent';

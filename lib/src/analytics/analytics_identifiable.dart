@@ -1,14 +1,14 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// A class that contains the analytics information for ViewNavigationType.
 final class AnalyticsIdentifiable {
-  const AnalyticsIdentifiable({
+  const new({
     required this._screenName,
     required this.builder,
     this._dynamicScreenName,
   });
 
-  factory AnalyticsIdentifiable.withDynamicScreenName(
+  factory withDynamicScreenName(
     String Function() screenName, {
     required WidgetBuilder builder,
   }) {

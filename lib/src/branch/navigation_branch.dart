@@ -14,7 +14,7 @@ typedef NavigationBranchId = Object;
 /// stack is [initialNavigation]; subsequent pushes/presents append to it.
 /// Switching branches preserves each branch's stack.
 class NavigationBranch {
-  const NavigationBranch({
+  const new({
     required this.id,
     required this.initialNavigation,
     this.wantsKeepAlive = true,

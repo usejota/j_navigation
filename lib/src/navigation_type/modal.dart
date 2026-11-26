@@ -4,7 +4,7 @@ part of 'navigation_type.dart';
 
 /// A navigation type for showing modal bottom sheets as screens.
 final class Modal extends ViewNavigationType {
-  Modal({
+  new({
     required super.analyticsIdentifiable,
     super.skipKeyboardDismissal,
     super.navigationKey,

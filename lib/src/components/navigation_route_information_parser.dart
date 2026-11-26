@@ -1,9 +1,7 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-
 import 'package:j_navigation/src/navigation_type/navigation_type.dart';
+import 'package:material_ui/material_ui.dart';
 
 // Interface for feature providers
 abstract interface class FeatureProvider {
@@ -31,14 +29,12 @@ typedef RouteConfig = ({
 
 /// Returned when a route can't be parsed into a [NavigationType].
 final class _NoNavigationConfiguration {
-  const _NoNavigationConfiguration();
+  const new();
 }
 
 final class NavigationRouteInformationParser
     extends RouteInformationParser<Object> {
-  NavigationRouteInformationParser({
-    this._featureProvider,
-  });
+  new({this._featureProvider});
 
   /// Resolves deep-link feature routes. When `null`, deep-link URIs resolve
   /// to no navigation — apps that don't need deep linking can omit it.
@@ -51,34 +47,28 @@ final class NavigationRouteInformationParser
   ) async {
     final segments = routeInformation.uri.pathSegments;
     if (segments.isEmpty) {
-      return SynchronousFuture(
-        const (
-          requiredPriorNavigation: <String>[],
-          navigationType: _noNavigation,
-          branchScreenName: null,
-        ),
+      return const (
+        requiredPriorNavigation: <String>[],
+        navigationType: _noNavigation,
+        branchScreenName: null,
       );
     }
 
     final featureName = segments.first;
     final provider = _featureProvider;
     if (provider == null) {
-      return SynchronousFuture(
-        const (
-          requiredPriorNavigation: <String>[],
-          navigationType: _noNavigation,
-          branchScreenName: null,
-        ),
+      return const (
+        requiredPriorNavigation: <String>[],
+        navigationType: _noNavigation,
+        branchScreenName: null,
       );
     }
     final featureRoute = await provider.featureRouteFor(featureName);
     if (featureRoute == null) {
-      return SynchronousFuture(
-        const (
-          requiredPriorNavigation: <String>[],
-          navigationType: _noNavigation,
-          branchScreenName: null,
-        ),
+      return const (
+        requiredPriorNavigation: <String>[],
+        navigationType: _noNavigation,
+        branchScreenName: null,
       );
     }
 
@@ -88,20 +78,18 @@ final class NavigationRouteInformationParser
       screenName: segments.length > 1 ? segments[1] : null,
     );
     if (featurePage == null) {
-      return SynchronousFuture(
-        const (
-          requiredPriorNavigation: <String>[],
-          navigationType: _noNavigation,
-          branchScreenName: null,
-        ),
+      return const (
+        requiredPriorNavigation: <String>[],
+        navigationType: _noNavigation,
+        branchScreenName: null,
       );
     }
 
-    return SynchronousFuture((
+    return (
       requiredPriorNavigation: featureRoute.piorNavigationRequired,
       navigationType: featurePage,
       branchScreenName: null,
-    ));
+    );
   }
 
   /// Restores the browser route information from the current configuration.
@@ -139,8 +127,6 @@ final class NavigationRouteInformationParser
         uri: Uri(pathSegments: <String>[branchScreenName, screenName]),
       );
     }
-    return RouteInformation(
-      uri: Uri(pathSegments: <String>[screenName]),
-    );
+    return RouteInformation(uri: Uri(pathSegments: <String>[screenName]));
   }
 }

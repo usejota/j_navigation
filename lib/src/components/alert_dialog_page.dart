@@ -1,17 +1,16 @@
 // ignore_for_file: avoid-dynamic
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:j_navigation/src/components/root_pop_scope.dart';
 import 'package:j_navigation/src/theme/navigation_theme.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// A [Page] that presents a system-style alert dialog.
 ///
 /// This uses a dialog [Route] so it behaves like a system alert (modal),
 /// while still participating in the declarative navigation stack.
 final class AlertDialogPage<T> extends Page<T> {
-  const AlertDialogPage({
+  const new({
     required this.title,
     required this.actionsBuilder,
     this.description,
@@ -46,9 +45,8 @@ final class AlertDialogPage<T> extends Page<T> {
           return RootPopScope(
             child: CupertinoTheme(
               data: cupertinoTheme.copyWith(
-                primaryColor: NavigationTheme.of(
-                  dialogContext,
-                ).cupertinoPrimaryColor,
+                primaryColor: NavigationTheme.of(dialogContext)
+                    .cupertinoPrimaryColor,
               ),
               child: CupertinoAlertDialog(
                 title: Text(title),

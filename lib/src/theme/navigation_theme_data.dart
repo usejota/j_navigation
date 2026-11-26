@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Colors used by navigation-presented UI (alerts, modal bottom sheets).
 ///
@@ -13,7 +13,7 @@ class NavigationThemeData {
   ///
   /// Every field has a Material default; pass only the colors you want to
   /// override.
-  const NavigationThemeData({
+  const new({
     this.scrimColor = Colors.black54,
     this.cupertinoPrimaryColor = CupertinoColors.activeBlue,
   });

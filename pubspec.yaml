@@ -1,6 +1,6 @@
 name: j_navigation
 description: "A production-proven, action-based navigation system for Flutter — context-free controller, pure stack-transform actions, tabbed shell, bring-your-own analytics. No codegen."
-version: 1.0.3
+version: 2.0.0
 repository: https://github.com/usejota/j_navigation
 issue_tracker: https://github.com/usejota/j_navigation/issues
 topics:
@@ -11,18 +11,20 @@ topics:
   - architecture
 
 environment:
-  sdk: ^3.12.0
-  flutter: ">=3.44.0"
+  sdk: ^3.14.0
+  flutter: ">=3.50.0"
 
 dependencies:
+  cupertino_ui: ^1.1.7
   flutter:
     sdk: flutter
+  material_ui: ^1.11.1
   meta: ^1.16.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  very_good_analysis: ^10.0.0
+  very_good_analysis: ^11.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

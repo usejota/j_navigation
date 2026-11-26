@@ -1,12 +1,7 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class NoAnimationPage<T> extends Page<T> {
-  const NoAnimationPage({
-    required this.child,
-    super.key,
-    super.name,
-    super.arguments,
-  });
+  const new({required this.child, super.key, super.name, super.arguments});
 
   final Widget child;
 

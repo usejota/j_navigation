@@ -1,9 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-
 import 'package:j_navigation/src/branch/navigation_branch.dart';
 import 'package:j_navigation/src/branch/navigation_shell.dart';
 import 'package:j_navigation/src/components/navigation_controller.dart';
@@ -12,11 +10,12 @@ import 'package:j_navigation/src/components/root_pop_scope.dart';
 import 'package:j_navigation/src/navigation_type/navigation_type.dart';
 import 'package:j_navigation/src/theme/navigation_theme.dart';
 import 'package:j_navigation/src/theme/navigation_theme_data.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// A router delegate for managing the navigation stack.
 final class NavigationRouterDelegate extends RouterDelegate<Object>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<Object> {
-  NavigationRouterDelegate(
+  new(
     this._controller, {
     required this._routeInformationParser,
     List<NavigatorObserver>? observers,
@@ -133,10 +132,7 @@ final class NavigationRouterDelegate extends RouterDelegate<Object>
     );
   }
 
-  Widget _buildBranchNavigator(
-    BuildContext context,
-    NavigationBranchId id,
-  ) {
+  Widget _buildBranchNavigator(BuildContext context, NavigationBranchId id) {
     final isActive = id == _controller.activeBranchId;
     if (!isActive && !_controller.wantsKeepAlive(id)) {
       return const SizedBox.shrink();

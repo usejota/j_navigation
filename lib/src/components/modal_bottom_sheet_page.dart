@@ -1,11 +1,10 @@
 // ignore_for_file: avoid-dynamic
 
-import 'package:flutter/material.dart';
-
 import 'package:j_navigation/src/theme/navigation_theme.dart';
+import 'package:material_ui/material_ui.dart';
 
 final class ModalBottomSheetPage<T> extends Page<T> {
-  const ModalBottomSheetPage({
+  const new({
     required this.child,
     required this.isScrollControlled,
     required this.isDismissible,

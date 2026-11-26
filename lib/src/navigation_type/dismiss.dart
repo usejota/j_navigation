@@ -7,7 +7,7 @@ part of 'navigation_type.dart';
 /// with a value — the idiomatic, action-based equivalent of
 /// `Navigator.pop(context, result)`.
 final class Dismiss extends NavigationType {
-  const Dismiss({this.result, this.skipKeyboardDismissal = false});
+  const new({this.result, this.skipKeyboardDismissal = false});
 
   /// The value to resolve an in-flight `present<T>` with, if the dismissed
   /// view is a presented screen. `null` (the default) resolves with `null`.

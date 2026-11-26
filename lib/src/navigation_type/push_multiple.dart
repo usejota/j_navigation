@@ -1,7 +1,7 @@
 part of 'navigation_type.dart';
 
 final class PushMultiple extends ViewNavigationType {
-  PushMultiple({
+  new({
     required super.analyticsIdentifiable,
     required this.hiddenPages,
     super.animated,

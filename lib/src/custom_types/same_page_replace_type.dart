@@ -5,9 +5,7 @@ sealed class SamePageNavigationReplaceType;
 
 final class SamePageNavigationReplaceTop
     implements SamePageNavigationReplaceType {
-  const new({
-    this.animationType = const ReplaceAnimationTypeNone(),
-  });
+  const new({this.animationType = const ReplaceAnimationTypeNone()});
 
   final ReplaceAnimationType animationType;
 }

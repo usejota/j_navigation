@@ -45,9 +45,8 @@ final class AlertDialogPage<T> extends Page<T> {
           return RootPopScope(
             child: CupertinoTheme(
               data: cupertinoTheme.copyWith(
-                primaryColor: NavigationTheme.of(
-                  dialogContext,
-                ).cupertinoPrimaryColor,
+                primaryColor: NavigationTheme.of(dialogContext)
+                    .cupertinoPrimaryColor,
               ),
               child: CupertinoAlertDialog(
                 title: Text(title),

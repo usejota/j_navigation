@@ -12,11 +12,10 @@ import 'package:j_navigation/src/branch/navigation_branch.dart';
 /// branch — wire it to a tab button's `onTap`.
 ///
 /// The package keeps the bar widget host-supplied so it stays UI-agnostic.
-typedef NavigationShellBuilder =
-    Widget Function(
-      BuildContext context,
-      Widget branchContent,
-      NavigationBranchId activeBranchId,
-      int activeBranchIndex,
-      void Function(NavigationBranchId target) switchTo,
-    );
+typedef NavigationShellBuilder = Widget Function(
+  BuildContext context,
+  Widget branchContent,
+  NavigationBranchId activeBranchId,
+  int activeBranchIndex,
+  void Function(NavigationBranchId target) switchTo,
+);

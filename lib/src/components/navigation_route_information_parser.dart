@@ -34,9 +34,7 @@ final class _NoNavigationConfiguration {
 
 final class NavigationRouteInformationParser
     extends RouteInformationParser<Object> {
-  new({
-    this._featureProvider,
-  });
+  new({this._featureProvider});
 
   /// Resolves deep-link feature routes. When `null`, deep-link URIs resolve
   /// to no navigation — apps that don't need deep linking can omit it.
@@ -129,8 +127,6 @@ final class NavigationRouteInformationParser
         uri: Uri(pathSegments: <String>[branchScreenName, screenName]),
       );
     }
-    return RouteInformation(
-      uri: Uri(pathSegments: <String>[screenName]),
-    );
+    return RouteInformation(uri: Uri(pathSegments: <String>[screenName]));
   }
 }

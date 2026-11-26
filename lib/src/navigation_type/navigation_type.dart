@@ -96,10 +96,9 @@ abstract base class ViewNavigationType extends NavigationType
 /// still needs to be tracked for analytics and breadcrumbs.
 abstract base class NoPageViewNavigationType extends NavigationType
     with PageNavigationType {
-  new({
-    required AnalyticsIdentifiable analyticsIdentifiable,
-  }) : _analyticsIdentifiable = analyticsIdentifiable,
-       key = ValueKey('${analyticsIdentifiable.hashCode}');
+  new({required AnalyticsIdentifiable analyticsIdentifiable})
+    : _analyticsIdentifiable = analyticsIdentifiable,
+      key = ValueKey('${analyticsIdentifiable.hashCode}');
 
   final AnalyticsIdentifiable _analyticsIdentifiable;
   final ValueKey<String> key;

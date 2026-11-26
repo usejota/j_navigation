@@ -132,10 +132,7 @@ final class NavigationRouterDelegate extends RouterDelegate<Object>
     );
   }
 
-  Widget _buildBranchNavigator(
-    BuildContext context,
-    NavigationBranchId id,
-  ) {
+  Widget _buildBranchNavigator(BuildContext context, NavigationBranchId id) {
     final isActive = id == _controller.activeBranchId;
     if (!isActive && !_controller.wantsKeepAlive(id)) {
       return const SizedBox.shrink();

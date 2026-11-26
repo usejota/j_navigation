@@ -15,8 +15,7 @@ abstract base class ReplaceAnimationType {
 }
 
 final class ReplaceAnimationTypeNone extends ReplaceAnimationType {
-  const new({this.swipeToDismissEnabled = true})
-    : super(animated: false);
+  const new({this.swipeToDismissEnabled = true}) : super(animated: false);
 
   @override
   final bool swipeToDismissEnabled;
@@ -34,10 +33,7 @@ final class ReplaceAnimationTypeNone extends ReplaceAnimationType {
 }
 
 final class ReplaceAnimationTypePush extends ReplaceAnimationType {
-  const new({
-    this.swipeToDismissEnabled = true,
-    super.animated = true,
-  });
+  const new({this.swipeToDismissEnabled = true, super.animated = true});
 
   @override
   final bool swipeToDismissEnabled;

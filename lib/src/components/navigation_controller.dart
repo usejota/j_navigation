@@ -728,10 +728,7 @@ final class _DefaultBranchId {
 
 /// Controller-internal metadata for a branch.
 final class _BranchMetadata {
-  const new({
-    required this.wantsKeepAlive,
-    required this.screenName,
-  });
+  const new({required this.wantsKeepAlive, required this.screenName});
 
   final bool wantsKeepAlive;
   final String screenName;

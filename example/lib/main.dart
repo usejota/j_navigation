@@ -185,9 +185,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   );
                   if (!context.mounted) return;
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text('Picked: $choice')));
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(SnackBar(content: Text('Picked: $choice')));
                 },
               ),
               button(

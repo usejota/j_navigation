@@ -1,5 +1,25 @@
 # Changelog
 
+## 2.0.0
+
+### Breaking
+
+- Requires Flutter >= 3.50 and Dart ^3.14.
+- Migrated from the deprecated `package:flutter/material.dart` and
+  `package:flutter/cupertino.dart` to `package:material_ui` and
+  `package:cupertino_ui` (new dependencies). These packages ship their own
+  copies of the Material/Cupertino classes, so pages, routes and dialogs built
+  by this package read the `material_ui` `Theme`. An app still using
+  `MaterialApp` from `package:flutter/material.dart` keeps working, but its
+  theme (for example `pageTransitionsTheme` and dialog styling) no longer
+  reaches navigation-presented UI. Migrate the app to `material_ui` /
+  `cupertino_ui` to restore it. Public signatures are unchanged.
+
+### Changed
+
+- Example app: Gradle 9.5.0, Android Gradle Plugin 9.3.1, Kotlin 2.4.20; iOS
+  deployment target 15.0 and UIScene lifecycle.
+
 ## 1.0.3
 
 ### Fixed

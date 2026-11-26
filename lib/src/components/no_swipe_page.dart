@@ -1,7 +1,7 @@
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 
 class NoSwipePage<T> extends Page<T> {
-  const NoSwipePage({required this.child, super.name, super.key});
+  const new({required this.child, super.name, super.key});
 
   final Widget child;
 

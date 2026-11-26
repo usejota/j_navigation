@@ -11,7 +11,7 @@ part of 'navigation_type.dart';
 /// branch's stack. This mirrors the common "switch tab then push a screen"
 /// pattern in a single action.
 final class SwitchTab extends NavigationType {
-  const SwitchTab(
+  const new(
     this.targetBranchId, {
     this.thenNavigate,
     this.skipKeyboardDismissal = false,

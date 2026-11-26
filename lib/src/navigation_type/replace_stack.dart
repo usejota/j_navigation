@@ -2,7 +2,7 @@ part of 'navigation_type.dart';
 
 final class ReplaceStack extends ViewNavigationType
     with DismissableNavigationType {
-  ReplaceStack({
+  new({
     required super.analyticsIdentifiable,
     required this.animationType,
     super.navigationKey,

@@ -18,7 +18,7 @@ enum PresentTransition {
 /// `dismissed`) to receive it. `dismissed` requires `animated` (the default);
 /// a non-animated presentation does not wire a result.
 final class Present extends ViewNavigationType {
-  Present({
+  new({
     required super.analyticsIdentifiable,
     super.animated,
     super.navigationKey,
@@ -76,7 +76,7 @@ final class Present extends ViewNavigationType {
 /// [Present] action can await the value the presented screen returns from
 /// `Navigator.pop(context, result)`.
 class _PresentResultPage extends Page<Object?> {
-  const _PresentResultPage({
+  const new({
     required this.child,
     required this.completer,
     required this.transition,
@@ -90,7 +90,7 @@ class _PresentResultPage extends Page<Object?> {
 
   @override
   Route<Object?> createRoute(BuildContext context) {
-    final Route<Object?> route = switch (transition) {
+    final route = switch (transition) {
       PresentTransition.fade => PageRouteBuilder<Object?>(
         settings: this,
         pageBuilder: (_, _, _) => child,

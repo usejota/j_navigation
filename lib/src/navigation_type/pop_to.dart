@@ -5,7 +5,7 @@ part of 'navigation_type.dart';
 ///
 /// If no page with [screenName] exists, this action is a no-op.
 final class PopTo extends NavigationType with PageNavigationType {
-  const PopTo(this.screenName, {this.skipKeyboardDismissal = false});
+  const new(this.screenName, {this.skipKeyboardDismissal = false});
 
   @override
   final String screenName;

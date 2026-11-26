@@ -1,8 +1,6 @@
 // ignore_for_file: no-magic-number
 
-import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-
 import 'package:j_navigation/src/analytics/analytics_identifiable.dart';
 import 'package:j_navigation/src/analytics/analytics_queue.dart';
 import 'package:j_navigation/src/analytics/navigation_analytics_sink.dart';
@@ -12,6 +10,7 @@ import 'package:j_navigation/src/analytics/screen_time_tracker.dart';
 import 'package:j_navigation/src/branch/navigation_branch.dart';
 import 'package:j_navigation/src/custom_types/same_page_replace_type.dart';
 import 'package:j_navigation/src/navigation_type/navigation_type.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// A controller for managing the navigation stack.
 ///
@@ -20,7 +19,7 @@ import 'package:j_navigation/src/navigation_type/navigation_type.dart';
 /// no-op sink is used), the controller runs without analytics — the
 /// "no analytics" build.
 interface class NavigationController extends ChangeNotifier {
-  NavigationController(
+  new(
     ViewNavigationType initialNavigation, {
     NavigationAnalyticsSink? analyticsSink,
   }) : this._(
@@ -43,7 +42,7 @@ interface class NavigationController extends ChangeNotifier {
   /// [branches] must be non-empty and have unique [NavigationBranch.id]s.
   /// When [initialBranchId] is omitted, the first branch is active. The active
   /// branch's [NavigationBranch.initialNavigation] seeds analytics.
-  factory NavigationController.tabbed({
+  factory tabbed({
     required List<NavigationBranch> branches,
     NavigationBranchId? initialBranchId,
     NavigationAnalyticsSink? analyticsSink,
@@ -89,7 +88,7 @@ interface class NavigationController extends ChangeNotifier {
     );
   }
 
-  NavigationController._({
+  new _({
     required this._branches,
     required this._branchMetadata,
     required this._activeBranchId,
@@ -684,13 +683,13 @@ interface class NavigationController extends ChangeNotifier {
 
   /// Flushes pending analytics events. Only for testing.
   @visibleForTesting
-  Future<void> flushAnalytics() async => _analyticsQueue?.flush();
+  Future<void> flushAnalytics() async => await _analyticsQueue?.flush();
 }
 
 /// Listens for [WidgetsBinding] metric changes and invokes [onDismissed]
 /// once the keyboard view insets reach zero, then removes itself.
 final class _KeyboardDismissObserver with WidgetsBindingObserver {
-  _KeyboardDismissObserver({required this.onDismissed}) {
+  new({required this.onDismissed}) {
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -724,12 +723,12 @@ final class _KeyboardDismissObserver with WidgetsBindingObserver {
 /// Sentinel identity for the anonymous default branch. A private const
 /// instance so app-supplied [NavigationBranchId]s can never collide with it.
 final class _DefaultBranchId {
-  const _DefaultBranchId();
+  const new();
 }
 
 /// Controller-internal metadata for a branch.
 final class _BranchMetadata {
-  const _BranchMetadata({
+  const new({
     required this.wantsKeepAlive,
     required this.screenName,
   });

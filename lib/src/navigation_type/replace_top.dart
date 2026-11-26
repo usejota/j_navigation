@@ -4,7 +4,7 @@ part of 'navigation_type.dart';
 
 final class ReplaceTop extends ViewNavigationType
     with DismissableNavigationType {
-  ReplaceTop({
+  new({
     required super.analyticsIdentifiable,
     required this.animationType,
     super.navigationKey,

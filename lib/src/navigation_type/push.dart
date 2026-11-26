@@ -4,7 +4,7 @@ part of 'navigation_type.dart';
 
 /// A navigation type that pushes a new view onto the navigation stack.
 final class Push extends ViewNavigationType with DismissableNavigationType {
-  Push({
+  new({
     required super.analyticsIdentifiable,
     super.navigationKey,
     this.swipeToDismissEnabled = true,

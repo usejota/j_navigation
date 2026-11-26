@@ -16,7 +16,7 @@ import 'package:j_navigation/src/theme/navigation_theme_data.dart';
 /// ```
 class NavigationTheme extends InheritedWidget {
   /// Creates a navigation theme provider.
-  const NavigationTheme({
+  const new({
     required this.data,
     required super.child,
     super.key,

@@ -4,12 +4,11 @@
 
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-
 import 'package:j_navigation/navigation.dart';
 import 'package:j_navigation/test_exports.dart';
+import 'package:material_ui/material_ui.dart';
 
 // Helper function to create navigation types with analytics
 AnalyticsIdentifiable _createAnalytics(
@@ -23,14 +22,14 @@ AnalyticsIdentifiable _createAnalytics(
 }
 
 final class _NoopFeatureProvider implements FeatureProvider {
-  const _NoopFeatureProvider();
+  const new();
 
   @override
   Future<FeatureRoute?> featureRouteFor(String featureName) async => null;
 }
 
 final class _TestFeatureProvider implements FeatureProvider {
-  _TestFeatureProvider(this._routes);
+  new(this._routes);
 
   final Map<String, FeatureRoute> _routes;
 
@@ -3630,11 +3629,9 @@ void main() {
       await pumpApp(tester, controller);
 
       final rootContext = tester.element(find.text('Root'));
-      unawaited(
-        showDialog<void>(
-          context: rootContext,
-          builder: (context) => const AlertDialog(content: Text('Dialog')),
-        ),
+      showDialog<void>(
+        context: rootContext,
+        builder: (context) => const AlertDialog(content: Text('Dialog')),
       );
       await tester.pumpAndSettle();
       expect(find.text('Dialog'), findsOneWidget);
@@ -3651,7 +3648,7 @@ void main() {
 }
 
 class _Counter extends StatefulWidget {
-  const _Counter({required this.onInit});
+  const new({required this.onInit});
 
   final VoidCallback onInit;
 
@@ -3745,7 +3742,7 @@ class _MockContext implements BuildContext {
 BuildContext get mockContext => _MockContext();
 
 final class _DismissAndPresent extends ViewNavigationType {
-  _DismissAndPresent({required super.analyticsIdentifiable});
+  new({required super.analyticsIdentifiable});
 
   @override
   String get analyticsName => 'DismissAndPresent';

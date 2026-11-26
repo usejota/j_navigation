@@ -2,9 +2,8 @@
 
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:j_navigation/src/analytics/analytics_identifiable.dart';
 import 'package:j_navigation/src/branch/navigation_branch.dart';
 import 'package:j_navigation/src/components/alert_dialog_page.dart';
@@ -13,22 +12,23 @@ import 'package:j_navigation/src/components/no_animation_page.dart';
 import 'package:j_navigation/src/components/no_swipe_page.dart';
 import 'package:j_navigation/src/components/root_pop_scope.dart';
 import 'package:j_navigation/src/custom_types/replace_animation_type.dart';
+import 'package:material_ui/material_ui.dart';
 
 part 'alert.dart';
 part 'dismiss.dart';
-part 'pop_to.dart';
 part 'modal.dart';
+part 'pop_to.dart';
 part 'present.dart';
 part 'present_multiple.dart';
 part 'push.dart';
 part 'push_multiple.dart';
 part 'replace_stack.dart';
 part 'replace_top.dart';
-part 'switch_tab.dart';
 part 'swipe.dart';
+part 'switch_tab.dart';
 
 abstract base class NavigationType {
-  const NavigationType();
+  const new();
 
   /// Stable identifier for analytics and breadcrumbs.
   ///
@@ -49,7 +49,7 @@ abstract base class NavigationType {
 /// Base class for all navigation types that use a widget builder.
 abstract base class ViewNavigationType extends NavigationType
     with PageNavigationType {
-  ViewNavigationType({
+  new({
     required this.analyticsIdentifiable,
     ValueKey<String>? navigationKey,
     this.skipKeyboardDismissal = false,
@@ -96,7 +96,7 @@ abstract base class ViewNavigationType extends NavigationType
 /// still needs to be tracked for analytics and breadcrumbs.
 abstract base class NoPageViewNavigationType extends NavigationType
     with PageNavigationType {
-  NoPageViewNavigationType({
+  new({
     required AnalyticsIdentifiable analyticsIdentifiable,
   }) : _analyticsIdentifiable = analyticsIdentifiable,
        key = ValueKey('${analyticsIdentifiable.hashCode}');

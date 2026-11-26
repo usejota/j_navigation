@@ -4,7 +4,7 @@ part of 'navigation_type.dart';
 
 /// A navigation type that presents a new view on top of the current view.
 final class PresentMultiple extends ViewNavigationType {
-  PresentMultiple({
+  new({
     required super.analyticsIdentifiable,
     required this.hiddenPages,
     super.animated,

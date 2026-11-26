@@ -4,7 +4,7 @@ part of 'navigation_type.dart';
 
 @immutable
 final class AlertButton {
-  const AlertButton({
+  const new({
     required this.title,
     this.onPressed,
     this.dismissAlert = true,
@@ -29,7 +29,7 @@ final class AlertButton {
 
 /// A navigation type that presents a system alert dialog.
 final class Alert extends ViewNavigationType {
-  Alert({
+  new({
     required this.title,
     required this.buttons,
     required String analyticsScreenName,

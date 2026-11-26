@@ -5,7 +5,7 @@ import 'package:j_navigation/src/analytics/navigation_analytics_event.dart';
 /// Emitted to a `NavigationAnalyticsSink` when one is provided to the
 /// navigation controller.
 class NavigationScreenEnterEvent implements NavigationAnalyticsEvent {
-  const NavigationScreenEnterEvent({
+  const new({
     required this.screenName,
     this.navigationMethod,
     this.sourceScreen,

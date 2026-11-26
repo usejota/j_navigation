@@ -15,7 +15,7 @@ import 'package:j_navigation/src/analytics/navigation_screen_exit_event.dart';
 /// are forwarded to the provided [NavigationAnalyticsSink] after the current
 /// frame is painted.
 final class AnalyticsQueue {
-  AnalyticsQueue(this._sink);
+  new(this._sink);
 
   final NavigationAnalyticsSink _sink;
   final Queue<NavigationAnalyticsEvent> _eventQueue =

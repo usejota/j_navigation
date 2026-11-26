@@ -38,4 +38,3 @@ linter:
     prefer_const_literals_to_create_immutables: true
     prefer_final_fields: true
     unnecessary_constructor_name: true
-    one_member_abstracts: false

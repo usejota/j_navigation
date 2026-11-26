@@ -4,7 +4,7 @@ part of 'navigation_type.dart';
 
 /// A navigation type that pushes a new view onto the navigation stack.
 final class Swipe extends NoPageViewNavigationType {
-  Swipe({
+  new({
     required super.analyticsIdentifiable,
   });
 

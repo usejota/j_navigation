@@ -17,7 +17,7 @@ interface class NavigationAnalyticsSink {
   /// Subclasses override [onScreenEnter], [onScreenExit], and optionally
   /// [flush] to receive events. Use the default const constructor for a
   /// no-op sink.
-  const NavigationAnalyticsSink();
+  const new();
 
   /// Called when a screen is entered via navigation.
   void onScreenEnter(NavigationScreenEnterEvent event) {}

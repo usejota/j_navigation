@@ -5,7 +5,7 @@ import 'package:j_navigation/src/analytics/navigation_analytics_event.dart';
 /// Emitted to a `NavigationAnalyticsSink` when one is provided to the
 /// navigation controller.
 class NavigationScreenExitEvent implements NavigationAnalyticsEvent {
-  const NavigationScreenExitEvent({
+  const new({
     required this.screenName,
     this.exitMethod,
     this.destinationScreen,

@@ -1,16 +1,15 @@
 import 'dart:ui';
 
-import 'package:flutter/material.dart';
-
 import 'package:j_navigation/src/branch/navigation_shell.dart';
 import 'package:j_navigation/src/components/navigation_controller.dart';
 import 'package:j_navigation/src/components/navigation_route_information_parser.dart';
 import 'package:j_navigation/src/components/navigation_router_delegate.dart';
 import 'package:j_navigation/src/theme/navigation_theme_data.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// A configuration for the navigation system.
 final class NavigationConfig extends RouterConfig<Object> {
-  NavigationConfig({
+  new({
     required NavigationController controller,
     FeatureProvider? featureProvider,
     List<NavigatorObserver>? observers,
@@ -26,7 +25,7 @@ final class NavigationConfig extends RouterConfig<Object> {
          shellBuilder: shellBuilder,
        );
 
-  NavigationConfig._({
+  new _({
     required NavigationController controller,
     required NavigationRouteInformationParser parser,
     List<NavigatorObserver>? observers,
